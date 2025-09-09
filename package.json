@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
     "dev": "nodemon --require tsconfig-paths/register --exec ts-node src/index.ts",
-    "build": "tsc"
+    "build": "tsc && tsc-alias"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +29,7 @@
     "@types/node": "^24.3.1",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "tsc-alias": "^1.8.16"
   }
 }
