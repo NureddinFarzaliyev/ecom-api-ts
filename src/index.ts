@@ -11,17 +11,11 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(express.json());
 app.use(cors());
+
+// Swagger Documentation
 app.use("/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocsV1));
 
-// Routes
-app.get("/", (_, res) => {
-  res.json({
-    success: true,
-    message: "Welcome to the API",
-    data: null,
-  });
-});
-
+// Version 1 Routes
 app.use("/v1", v1Router);
 
 // Initialize
