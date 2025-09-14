@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocsV1 from "@/shared/tools/swagger";
-import userRouter from "@/features/user/user.router";
+import { v1Router } from "@/features/v1/v1.router";
 
 // App
 const app = express();
@@ -15,10 +15,14 @@ app.use("/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocsV1));
 
 // Routes
 app.get("/", (_, res) => {
-  res.send("Hello, World! - deploy test successful");
+  res.json({
+    success: true,
+    message: "Welcome to the API",
+    data: null,
+  });
 });
 
-app.use("/user", userRouter);
+app.use("/v1", v1Router);
 
 // Initialize
 app.listen(PORT, () => {
