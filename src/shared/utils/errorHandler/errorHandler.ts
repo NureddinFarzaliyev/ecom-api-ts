@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { AppError } from "@/shared/utils/errorHandler/errors";
 import { createErrorResponse } from "@/shared/utils/responseFormatters/createErrorResponse.util";
+import { logger } from "@/shared/tools/logger";
 
 type AsyncController = (
   req: Request,
@@ -13,7 +14,7 @@ export const errorHandler = (controller: AsyncController): RequestHandler => {
     try {
       await controller(req, res, next);
     } catch (error: any) {
-      console.error(error);
+      logger.error(error);
 
       if (error instanceof AppError) {
         const errorResponse = createErrorResponse(error.message, error);
