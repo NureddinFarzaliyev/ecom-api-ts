@@ -28,6 +28,47 @@ paths:
           description: Verification error 
         '500':
           description: Internal server error & email error
+  /users/login:
+    post:
+      summary: Login user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                  example: "john@mail.com"
+                password:
+                  type: string
+                  description: User's password
+                  example: "yourpassword"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  csrfToken:
+                    type: string
+                    description: csrfToken for authenticated user
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Verification error 
+        '401':
+          description: Unauthorized - Invalid credentials
+        '403':
+          description: Forbidden - User not verified
+        '500':
+          description: Internal server error
   /users/verify?token={token}:
     post:
       summary: Verify user account

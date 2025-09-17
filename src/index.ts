@@ -11,6 +11,7 @@ import { v1Router } from "@/features/v1/v1.router";
 import { logger } from "@/shared/tools/logger";
 import { requestLogger } from "@/shared/middlewares/requestLogger.middleware";
 import { connectMongoDB } from "@/shared/tools/mongodb";
+import cookieParser from "cookie-parser";
 
 // App
 const app = express();
@@ -18,7 +19,13 @@ const PORT = process.env.PORT || 3000;
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }),
+);
 app.use(requestLogger);
 
 // Swagger Documentation
