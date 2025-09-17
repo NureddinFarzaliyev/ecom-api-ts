@@ -7,7 +7,7 @@ type AsyncController = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => Promise<any>;
+) => Promise<any> | void;
 
 export const errorHandler = (controller: AsyncController): RequestHandler => {
   return async (req, res, next) => {

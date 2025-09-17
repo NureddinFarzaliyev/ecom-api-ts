@@ -1,0 +1,120 @@
+tags: 
+  - name: Users
+    description: Operations related to users
+paths:
+  /users/config:
+    get:
+      summary: Get configuration details
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /users:
+    post:
+      summary: Register new user 
+      tags:
+        - Users
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Verification error 
+        '500':
+          description: Internal server error & email error
+  /users/verify?token={token}:
+    post:
+      summary: Verify user account
+      tags:
+        - Users
+      parameters:
+        - in: query
+          name: token 
+          schema:
+            type: string
+            format: jwt
+          required: true
+          description: Token of the user to verify
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Verification error 
+        '500':
+          description: Internal server error & email error
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - surname
+        - phoneNumber
+        - email
+        - password
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the user (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9e5"
+        name:
+          type: string
+          description: First name of the user
+          example: "John"
+        surname:
+          type: string
+          description: Last name of the user
+          example: "Doe"
+        phoneNumber:
+          type: string
+          description: User's phone number
+          example: "+994501234567"
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "john.doe@example.com"
+        isVerified:
+          type: boolean
+          description: Indicates whether the user has verified their account
+          example: false
+        password:
+          type: string
+          description: Hashed password (do not expose in responses)
+          example: "$2b$10$EIXhRj..."
+        role:
+          type: string
+          description: Role of the user in the system
+          enum: [user,admin]
+          example: "user"
+        permissions:
+          type: array
+          items:
+            type: string
+          description: Specific permissions assigned to the user
+          example: ["read:orders", "write:reviews"]
+        code:
+          type: string
+          nullable: true
+          description: Optional code for verification or other purposes
+          example: "123456"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the user was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the user was last updated
+          example: "2025-09-17T15:20:30.123Z"

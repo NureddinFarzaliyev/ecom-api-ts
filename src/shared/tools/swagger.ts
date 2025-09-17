@@ -10,7 +10,10 @@ const swaggerOptionsV1 = {
     },
     servers: [
       {
-        url: ["http://localhost:3000", process.env.BASE_URL],
+        url: ["http://localhost:3000"],
+      },
+      {
+        url: [process.env.BASE_URL],
       },
     ],
   },
