@@ -1,4 +1,5 @@
 import swaggerJSDoc from "swagger-jsdoc";
+import path from "path";
 
 const swaggerOptionsV1 = {
   swaggerDefinition: {
@@ -9,15 +10,11 @@ const swaggerOptionsV1 = {
       description: "API documentation for E-Commerce Web",
     },
     servers: [
-      {
-        url: ["http://localhost:3000"],
-      },
-      {
-        url: [process.env.BASE_URL],
-      },
+      { url: "http://localhost:3000" },
+      { url: process.env.BASE_URL || "" },
     ],
   },
-  apis: ["./src/**/*.yaml"],
+  apis: [path.join(__dirname, "../../docs/**/*.yaml")],
 };
 
 const swaggerDocsV1 = swaggerJSDoc(swaggerOptionsV1);
