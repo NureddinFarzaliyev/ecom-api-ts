@@ -117,3 +117,24 @@ export const loginUser = async (req: Request, res: Response) => {
   });
   res.status(200).json(response);
 };
+
+export const logoutUser = async (_req: Request, res: Response) => {
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    // domain: process.env.DOMAIN,
+    path: "/",
+    partitioned: true,
+  });
+  res.clearCookie("XSRF-TOKEN", {
+    httpOnly: false,
+    secure: true,
+    sameSite: "none",
+    // domain: process.env.DOMAIN,
+    path: "/",
+    partitioned: true,
+  });
+  const response = createSuccessResponse("Sucessfully logged out");
+  res.status(200).json(response);
+};

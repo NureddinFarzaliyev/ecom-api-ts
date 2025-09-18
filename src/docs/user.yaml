@@ -69,6 +69,16 @@ paths:
           description: Forbidden - User not verified
         '500':
           description: Internal server error
+  /users/logout:
+    post:
+      summary: Logout user
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
   /users/verify?token={token}:
     post:
       summary: Verify user account

@@ -1,6 +1,7 @@
 import {
   getUserConfig,
   loginUser,
+  logoutUser,
   registerUser,
   verifyUser,
 } from "@/features/user/user.controller";
@@ -13,3 +14,4 @@ userRouter.post("/", errorHandler(registerUser));
 userRouter.post("/login", errorHandler(loginUser));
 userRouter.get("/config", errorHandler(getUserConfig));
 userRouter.get("/verify", errorHandler(verifyUser));
+userRouter.get("/logout", errorHandler(logoutUser));
