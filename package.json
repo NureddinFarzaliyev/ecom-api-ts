@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
-    "dev": "nodemon --require tsconfig-paths/register --exec ts-node src/index.ts",
+    "dev": "ts-node-dev --poll --respawn --transpile-only --require tsconfig-paths/register --project ./tsconfig.json src/index.ts",
     "build": "tsc && tsc-alias"
   },
   "keywords": [],
@@ -28,6 +28,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2",
     "winston": "^3.17.0",

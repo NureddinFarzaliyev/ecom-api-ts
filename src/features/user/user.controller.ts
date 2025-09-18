@@ -138,3 +138,11 @@ export const logoutUser = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("Sucessfully logged out");
   res.status(200).json(response);
 };
+
+export const getMe = async (req: Request, res: Response) => {
+  console.log(req.userId);
+  const user = await User.findById(req.userId).select("-password");
+  if (!user) throw new AuthenticationError("User not found");
+  const response = createSuccessResponse("User data retrieved", user);
+  res.status(200).json(response);
+};

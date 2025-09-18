@@ -3,15 +3,7 @@ import { createErrorResponse } from "@/shared/utils/responseFormatters/createErr
 import { verifyJWTToken } from "@/shared/utils/tokens/jwt.util";
 import { NextFunction, Request, Response } from "express";
 
-interface AuthenticatedRequest extends Request {
-  user?: { id: string; email: string };
-}
-
-export const verifyJwt = (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction,
-) => {
+export const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
 
   if (!token) {
@@ -22,7 +14,9 @@ export const verifyJwt = (
   }
 
   try {
-    req.user = verifyJWTToken(token) as { id: string; email: string };
+    const user = verifyJWTToken(token) as { id: string; email: string };
+    req.userId = user.id;
+    req.userEmail = user.email;
     next();
   } catch {
     const err = new AuthenticationError("Invalid JWT");

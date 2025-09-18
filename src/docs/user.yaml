@@ -69,6 +69,24 @@ paths:
           description: Forbidden - User not verified
         '500':
           description: Internal server error
+  /users/me:
+    get:
+      summary: Get current user details
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized - Invalid credentials
+        '403':
+          description: Forbidden - User not verified
+        '500':
+          description: Internal server error
   /users/logout:
     post:
       summary: Logout user
