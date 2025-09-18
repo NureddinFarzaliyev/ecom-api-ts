@@ -1,3 +1,4 @@
+import { productCategoryRouter } from "@/features/productCategory/productCategory.router";
 import { userRouter } from "@/features/user/user.router";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { Router } from "express";
@@ -10,3 +11,4 @@ v1Router.get("/", (_, res) => {
 });
 
 v1Router.use("/users", userRouter);
+v1Router.use("/product-categories", productCategoryRouter);

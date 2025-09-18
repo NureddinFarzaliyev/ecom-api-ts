@@ -1,0 +1,142 @@
+tags:
+  - name: ProductCategories
+    description: Operations related to product categories
+paths:
+  /product-categories:
+    get:
+      summary: Fetch all product categories
+      tags:
+        - ProductCategories
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductCategory'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new product category
+      tags:
+        - ProductCategories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  description: Title of the product category
+                  example: "Electronics"
+                parentId:
+                  type: string
+                  description: Optional parent category ID
+                  example: "64f8c0a2f3e7b2b1d2a1c9e5"
+      responses:
+        '201':
+          description: Product category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCategory'
+        '400':
+          description: Validation error or duplicate title
+        '500':
+          description: Internal server error
+  /product-categories/{id}:
+    patch:
+      summary: Edit a product category
+      tags:
+        - ProductCategories
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the category to edit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: New title for the category
+                  example: "Home Electronics"
+                parentId:
+                  type: string
+                  nullable: true
+                  description: New parent category ID
+                  example: null
+      responses:
+        '200':
+          description: Product category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCategory'
+        '400':
+          description: Validation error
+        '404':
+          description: Category not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a product category
+      tags:
+        - ProductCategories
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the category to delete
+      responses:
+        '200':
+          description: Product category deleted successfully
+        '404':
+          description: Category not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    ProductCategory:
+      type: object
+      required:
+        - title
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the product category (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9e5"
+        title:
+          type: string
+          description: Title of the product category
+          example: "Electronics"
+        parentId:
+          type: string
+          nullable: true
+          description: Parent category ID if exists
+          example: "64f8c0a2f3e7b2b1d2a1c9e4"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the category was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the category was last updated
+          example: "2025-09-17T15:20:30.123Z"
