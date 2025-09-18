@@ -16,10 +16,25 @@ export const errorHandler = (controller: AsyncController): RequestHandler => {
     } catch (error: any) {
       logger.error(error);
 
+      // mongodb errors
+      if (error.message && error.message.includes("E11000")) {
+        const errorResponse = createErrorResponse("Duplicate Key Error", error);
+        res.status(400).json(errorResponse);
+        return;
+      }
+
+      if (error.message && error.message.includes("Cast to ObjectId failed")) {
+        const errorResponse = createErrorResponse("Invalid ID Format", error);
+        res.status(400).json(errorResponse);
+        return;
+      }
+
+      // Custom App Errors
       if (error instanceof AppError) {
         const errorResponse = createErrorResponse(error.message, error);
         res.status(error.statusCode).json(errorResponse);
       } else {
+        // Other unhandled errors
         const errorResponse = createErrorResponse(
           "Internal Server Error",
           error,

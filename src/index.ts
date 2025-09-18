@@ -12,6 +12,8 @@ import { logger } from "@/shared/tools/logger";
 import { requestLogger } from "@/shared/middlewares/requestLogger.middleware";
 import { connectMongoDB } from "@/shared/tools/mongodb";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import { limiter } from "@/shared/tools/limiter";
 
 // App
 const app = express();
@@ -27,6 +29,8 @@ app.use(
   }),
 );
 app.use(requestLogger);
+app.use(helmet());
+app.use(limiter);
 
 // Swagger Documentation
 app.use("/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocsV1));
