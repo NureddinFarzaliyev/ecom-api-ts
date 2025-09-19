@@ -10,10 +10,6 @@ import {
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
 import { deleteFiles } from "@/shared/utils/files/deleteFiles.util";
-import {
-  relativeToURL,
-  URLToRelative,
-} from "@/shared/utils/files/relativeToURL.util";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import {
@@ -40,10 +36,6 @@ export const getProducts = async (req: Request, res: Response) => {
     { page: queryPage, limit: queryLimit, populate: ["category"] },
   );
 
-  products.forEach((product) => {
-    product.images = product.images.map((img) => relativeToURL(img));
-  });
-
   const response = createSuccessResponse(
     "Products retrieved successfully",
     products,
@@ -60,7 +52,6 @@ export const getSingleProduct = async (req: Request, res: Response) => {
   if (!product) {
     throw new NotFoundError("Product not found");
   }
-  product.images = product.images.map((img) => relativeToURL(img));
   const response = createSuccessResponse(
     "Product retrieved successfully",
     product,
@@ -129,10 +120,7 @@ export const editProduct = async (req: Request, res: Response) => {
     const keepImages: string[] = body.keepImages
       ? JSON.parse(body.keepImages)
       : [];
-    const reversedKeepImages = keepImages.map((img) => URLToRelative(img));
-    toDelete = product.images.filter(
-      (img) => !reversedKeepImages.includes(img),
-    );
+    toDelete = product.images.filter((img) => !keepImages.includes(img));
 
     let imagePaths: string[] = [];
     if (files && files.length > 0) {

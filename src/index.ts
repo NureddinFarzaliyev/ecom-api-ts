@@ -38,7 +38,7 @@ app.use("/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocsV1));
 
 // Version 1 Routes
 app.use("/v1", v1Router);
-app.use("/files", fileRouter);
+app.use("/uploads", fileRouter);
 
 // Connect to DB
 connectMongoDB();
