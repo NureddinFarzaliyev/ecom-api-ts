@@ -1,0 +1,119 @@
+tags:
+  - name: Preferences
+    description: Manage application preferences and configurations
+paths:
+  /preferences:
+    get:
+      summary: Get all preferences (optionally filter by category)
+      tags:
+        - Preferences
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+            description: Category of preferences to filter by
+            example: "social"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Preference'
+        '500':
+          description: Internal server error
+
+    patch:
+      summary: Update preferences
+      tags:
+        - Preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                updates:
+                  type: array
+                  description: List of preferences to update
+                  items:
+                    type: object
+                    required:
+                      - key
+                      - value
+                    properties:
+                      key:
+                        type: string
+                        description: Preference key
+                        example: "theme"
+                      value:
+                        description: Preference value (can be string, number, object, etc.)
+                        example: "dark"
+      responses:
+        '200':
+          description: Preferences updated successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Preference'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /preferences/config:
+    get:
+      summary: Get preferences configuration
+      tags:
+        - Preferences
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  categories:
+                    - name: "general"
+                      description: "General app settings"
+                    - name: "social"
+                      description: "Social features settings"
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Preference:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the preference
+          example: "64f8c0a2f3e7b2b1d2a1c9e5"
+        key:
+          type: string
+          description: Key of the preference
+          example: "theme"
+        value:
+          description: Value of the preference (string, number, object, etc.)
+          example: "dark"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the preference was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the preference was last updated
+          example: "2025-09-17T15:20:30.123Z"

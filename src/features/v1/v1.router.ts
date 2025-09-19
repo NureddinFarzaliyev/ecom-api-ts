@@ -1,4 +1,5 @@
 import { cartRouter } from "@/features/cart/cart.router";
+import { preferenceRouter } from "@/features/preferences/preference.router";
 import { productRouter } from "@/features/product/product.router";
 import { productCategoryRouter } from "@/features/productCategory/productCategory.router";
 import { userRouter } from "@/features/user/user.router";
@@ -18,3 +19,4 @@ v1Router.use("/product-categories", productCategoryRouter);
 v1Router.use("/products", productRouter);
 v1Router.use("/wishlists", wishlistRouter);
 v1Router.use("/carts", cartRouter);
+v1Router.use("/preferences", preferenceRouter);
