@@ -1,0 +1,130 @@
+tags:
+  - name: Wishlist
+    description: Operations related to user wishlists
+paths:
+  /wishlist:
+    get:
+      summary: Get the user's wishlist
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Add product(s) to the user's wishlist
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+              properties:
+                productId:
+                  oneOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
+                  description: Product ID or array of Product IDs to add
+                  example: "64f8c0a2f3e7b2b1d2a1c9e5"
+      responses:
+        '200':
+          description: Product(s) added to wishlist successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Remove product(s) from the user's wishlist
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+              properties:
+                productId:
+                  oneOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
+                  description: Product ID or array of Product IDs to remove
+                  example: "64f8c0a2f3e7b2b1d2a1c9e5"
+      responses:
+        '200':
+          description: Product(s) removed from wishlist successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Wishlist:
+      type: object
+      required:
+        - userId
+        - products
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the wishlist
+          example: "64f8c0a2f3e7b2b1d2a1c9f9"
+        userId:
+          type: string
+          description: ID of the user who owns the wishlist
+          example: "64f8c0a2f3e7b2b1d2a1c9e4"
+        products:
+          type: array
+          description: List of product IDs in the wishlist
+          items:
+            type: string
+            description: Product ID
+            example: "64f8c0a2f3e7b2b1d2a1c9e5"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the wishlist was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the wishlist was last updated
+          example: "2025-09-17T15:20:30.123Z"

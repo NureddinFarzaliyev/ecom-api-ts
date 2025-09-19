@@ -27,6 +27,7 @@ export const validateUserRegistration = (user: Partial<IUser>) => {
       .valid(...Object.values(UserRole))
       .default(UserRole.USER),
     permissions: Joi.array().items(Joi.string()).default([]),
+    wishlist: Joi.array().items(Joi.string()).default([]),
   });
 
   return schema.validate(user);

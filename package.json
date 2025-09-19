@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
-    "dev": "ts-node-dev --poll --respawn --exit-child --transpile-only --require tsconfig-paths/register --project ./tsconfig.json src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --watch src --require tsconfig-paths/register --project ./tsconfig.json src/index.ts",
     "build": "tsc && tsc-alias"
   },
   "keywords": [],

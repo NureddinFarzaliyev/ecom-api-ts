@@ -16,6 +16,7 @@ import {
 } from "@/shared/utils/email/generateVerificationEmail.util";
 import { generateUserCode } from "@/features/user/utils/generateUserCode.util";
 import { generateCsrfToken } from "@/shared/utils/tokens/csrf.util";
+import { addProductsToWishlistService } from "@/features/wishlist/util/addProductsToWishlist.util";
 
 export const getUserConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("User config received", {
@@ -46,6 +47,11 @@ export const registerUser = async (
   const result = await user.save();
   const userObj = result.toObject();
   delete userObj.password;
+
+  const wishlist = req.body.wishlist;
+  if (wishlist && wishlist.length > 0) {
+    await addProductsToWishlistService(user._id, wishlist);
+  }
 
   const response = createSuccessResponse(
     "User sucessfully registered",
