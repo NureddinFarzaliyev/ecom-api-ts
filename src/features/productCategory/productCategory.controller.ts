@@ -1,3 +1,4 @@
+import { Product } from "@/features/product/product.schema";
 import {
   ProductCategory,
   validateCreateProductCategory,
@@ -84,6 +85,11 @@ export const deleteProductCategory = async (req: Request, res: Response) => {
     throw new ValidationError(
       "Cannot delete category with existing subcategories",
     );
+  }
+
+  const hasProducts = await Product.exists({ category: id });
+  if (hasProducts) {
+    throw new ValidationError("Cannot delete category with existing products");
   }
 
   const deletedCategory = await ProductCategory.findByIdAndDelete(id);
