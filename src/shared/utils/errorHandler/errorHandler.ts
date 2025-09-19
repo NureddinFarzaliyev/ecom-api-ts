@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, RequestHandler } from "express";
 import { AppError } from "@/shared/utils/errorHandler/errors";
 import { createErrorResponse } from "@/shared/utils/responseFormatters/createErrorResponse.util";
 import { logger } from "@/shared/tools/logger";
+import { cleanupFilesInRequest } from "@/shared/utils/files/cleanupFilesInRequest";
 
 type AsyncController = (
   req: Request,
@@ -15,6 +16,8 @@ export const errorHandler = (controller: AsyncController): RequestHandler => {
       await controller(req, res, next);
     } catch (error: any) {
       logger.error(error);
+
+      await cleanupFilesInRequest(req);
 
       // mongodb errors
       if (error.message && error.message.includes("E11000")) {

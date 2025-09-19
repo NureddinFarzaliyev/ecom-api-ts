@@ -10,8 +10,8 @@ const swaggerOptionsV1 = {
       description: "API documentation for E-Commerce Web",
     },
     servers: [
-      { url: "http://localhost:3000" },
-      { url: process.env.BASE_URL || "" },
+      { url: "http://localhost:3000/v1" },
+      { url: process.env.BASE_URL + "/v1" || "" },
     ],
   },
   apis: [path.join(__dirname, "../../docs/**/*.yaml")],

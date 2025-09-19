@@ -1,14 +1,12 @@
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
+import fs from "fs";
 import { Request } from "express";
+import { sanitizeFilename } from "@/shared/utils/sanitizer/sanitizer.util";
 
 export enum UploadField {
   ProductImage = "productImage",
 }
-
-const sanitizeFilename = (name: string): string => {
-  return name.replace(/[^a-z0-9_\-\.]/gi, "_").toLowerCase();
-};
 
 const storage = multer.diskStorage({
   destination: (_req, file, cb) => {
@@ -16,6 +14,10 @@ const storage = multer.diskStorage({
 
     if (file.fieldname === UploadField.ProductImage)
       folder = "uploads/products";
+
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
+    }
 
     cb(null, folder);
   },
@@ -43,6 +45,4 @@ const fileFilter = (
   }
 };
 
-const upload = multer({ storage, fileFilter });
-
-export default upload;
+export const upload = multer({ storage, fileFilter });

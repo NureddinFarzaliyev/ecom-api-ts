@@ -1,0 +1,167 @@
+import {
+  Product,
+  validateCreateProduct,
+  validateEditProduct,
+} from "@/features/product/product.schema";
+import { ProductCategory } from "@/features/productCategory/productCategory.schema";
+import { UploadField } from "@/shared/middlewares/multer.middleware";
+import {
+  NotFoundError,
+  ValidationError,
+} from "@/shared/utils/errorHandler/errors";
+import { deleteFiles } from "@/shared/utils/files/deleteFiles.util";
+import {
+  relativeToURL,
+  URLToRelative,
+} from "@/shared/utils/files/relativeToURL.util";
+import { paginate } from "@/shared/utils/pagination/paginate.util";
+import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
+import {
+  sanitizeObject,
+  sanitizeString,
+} from "@/shared/utils/sanitizer/sanitizer.util";
+import { Request, Response } from "express";
+
+export const getProductConfig = async (_req: Request, res: Response) => {
+  const response = createSuccessResponse("Product config", {
+    uploadFieldName: UploadField.ProductImage,
+  });
+  res.status(200).json(response);
+};
+
+export const getProducts = async (req: Request, res: Response) => {
+  const queryParams = sanitizeObject(req.query);
+  const queryPage = queryParams.page || 1;
+  const queryLimit = queryParams.limit || 10;
+
+  const { results: products, paginationData: pagination } = await paginate(
+    Product,
+    { isPublic: true },
+    { page: queryPage, limit: queryLimit, populate: ["category"] },
+  );
+
+  products.forEach((product) => {
+    product.images = product.images.map((img) => relativeToURL(img));
+  });
+
+  const response = createSuccessResponse(
+    "Products retrieved successfully",
+    products,
+    { pagination },
+  );
+
+  res.status(200).json(response);
+};
+
+export const getSingleProduct = async (req: Request, res: Response) => {
+  const product = await Product.findById(
+    sanitizeString(req.params.id),
+  ).populate("category");
+  if (!product) {
+    throw new NotFoundError("Product not found");
+  }
+  product.images = product.images.map((img) => relativeToURL(img));
+  const response = createSuccessResponse(
+    "Product retrieved successfully",
+    product,
+  );
+  res.status(200).json(response);
+};
+
+export const createProduct = async (req: Request, res: Response) => {
+  const body = sanitizeObject(req.body);
+  const { error } = validateCreateProduct(sanitizeObject(body));
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const category = await ProductCategory.exists({ _id: body.category });
+  if (!category) {
+    throw new ValidationError("Invalid product category");
+  }
+
+  const files = req.files as Express.Multer.File[];
+  if (!files || files.length === 0) {
+    throw new ValidationError("At least one product image is required");
+  }
+  const imagePaths = files.map((file) => file.path);
+
+  const product = new Product({ ...body, images: imagePaths });
+  const result = await product.save();
+  const response = createSuccessResponse(
+    "Product created successfully",
+    result,
+  );
+  res.status(201).json(response);
+};
+
+export const editProduct = async (req: Request, res: Response) => {
+  const body = sanitizeObject(req.body);
+  const { error } = validateEditProduct(sanitizeObject(body));
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const productId = req.params.id;
+  const product = await Product.findById(productId);
+  if (!product) {
+    throw new NotFoundError("Product not found");
+  }
+
+  if (body.category) {
+    const category = await ProductCategory.exists({ _id: body.category });
+    if (!category) {
+      throw new ValidationError("Invalid product category");
+    }
+  }
+
+  const files = req.files as Express.Multer.File[];
+
+  if (files && files.length > 0 && !body.keepImages) {
+    throw new ValidationError(
+      "keepImages field is required when modifying images",
+    );
+  }
+
+  let toDelete: string[] = [];
+
+  if (body.keepImages) {
+    const keepImages: string[] = body.keepImages
+      ? JSON.parse(body.keepImages)
+      : [];
+    const reversedKeepImages = keepImages.map((img) => URLToRelative(img));
+    toDelete = product.images.filter(
+      (img) => !reversedKeepImages.includes(img),
+    );
+
+    let imagePaths: string[] = [];
+    if (files && files.length > 0) {
+      imagePaths = files.map((file) => file.path);
+    }
+    product.images = [...keepImages, ...(imagePaths || [])];
+  }
+
+  Object.assign(product, body);
+  const result = await product.save();
+
+  if (toDelete.length > 0) {
+    await deleteFiles(toDelete);
+  }
+
+  const response = createSuccessResponse(
+    "Product updated successfully",
+    result,
+  );
+  res.status(200).json(response);
+};
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  const productId = req.params.id;
+  const product = await Product.findByIdAndDelete(productId);
+  if (!product) {
+    throw new NotFoundError("Product not found");
+  }
+  await deleteFiles(product.images);
+  const response = createSuccessResponse("Product deleted successfully");
+  res.status(200).json(response);
+};

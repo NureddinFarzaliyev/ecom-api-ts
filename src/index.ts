@@ -14,6 +14,7 @@ import { connectMongoDB } from "@/shared/tools/mongodb";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { limiter } from "@/shared/tools/limiter";
+import { fileRouter } from "@/features/file/file.router";
 
 // App
 const app = express();
@@ -37,6 +38,7 @@ app.use("/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocsV1));
 
 // Version 1 Routes
 app.use("/v1", v1Router);
+app.use("/files", fileRouter);
 
 // Connect to DB
 connectMongoDB();
