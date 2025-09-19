@@ -1,14 +1,14 @@
 import sanitizeHtml from "sanitize-html";
 
-export function sanitizeString(input: string, options = {}) {
+export const sanitizeString = (input: string, options = {}) => {
   return sanitizeHtml(input, {
     allowedTags: [],
     allowedAttributes: {},
     ...options,
   });
-}
+};
 
-export function sanitizeObject(obj: Record<string, any>, options = {}) {
+export const sanitizeObject = (obj: Record<string, any>, options = {}) => {
   const clean: Record<string, any> = {};
   for (const key in obj) {
     const value = obj[key];
@@ -21,4 +21,8 @@ export function sanitizeObject(obj: Record<string, any>, options = {}) {
     }
   }
   return clean;
-}
+};
+
+export const sanitizeFilename = (name: string): string => {
+  return name.replace(/[^a-z0-9_\-\.]/gi, "_").toLowerCase();
+};

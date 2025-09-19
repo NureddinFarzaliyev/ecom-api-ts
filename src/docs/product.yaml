@@ -1,0 +1,297 @@
+tags:
+  - name: Products
+    description: Operations related to products
+paths:
+  /products/config:
+    get:
+      summary: Get product configuration details
+      tags:
+        - Products
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+
+  /products:
+    get:
+      summary: Get list of products
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Number of products per page
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - productImage 
+                - category
+                - price
+                - stock
+              properties:
+                title:
+                  type: string
+                  description: Title of the product
+                  example: "Smartphone X"
+                description:
+                  type: string
+                  description: Product description
+                  example: "Latest model with high specs"
+                productImage:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Product images (max 5)
+                category:
+                  type: string
+                  description: ID of the product category
+                  example: "64f8c0a2f3e7b2b1d2a1c9e5"
+                price:
+                  type: number
+                  description: Product price
+                  example: 999.99
+                salePercent:
+                  type: number
+                  description: Sale percentage
+                  example: 10
+                cashbackPercent:
+                  type: number
+                  description: Cashback percentage
+                  example: 5
+                stock:
+                  type: number
+                  description: Quantity in stock
+                  example: 50
+                isPublic:
+                  type: boolean
+                  description: Whether the product is publicly visible
+                  example: true
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /products/{id}:
+    get:
+      summary: Get a single product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Product ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+    patch:
+      summary: Edit a product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Product ID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the product
+                  example: "Smartphone X Pro"
+                description:
+                  type: string
+                  description: Product description
+                  example: "Updated model with more features"
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Product images (max 5)
+                category:
+                  type: string
+                  description: ID of the product category
+                  example: "64f8c0a2f3e7b2b1d2a1c9e5"
+                price:
+                  type: number
+                  description: Product price
+                  example: 1099.99
+                salePercent:
+                  type: number
+                  description: Sale percentage
+                  example: 15
+                cashbackPercent:
+                  type: number
+                  description: Cashback percentage
+                  example: 5
+                stock:
+                  type: number
+                  description: Quantity in stock
+                  example: 40
+                keepImages:
+                  type: string 
+                  description: JSON-Stringified array of URLs of images to keep
+                  example: ["https://example.com/img1.jpg"]
+                productImage:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: New product images to add (max 5)
+                isPublic:
+                  type: boolean
+                  description: Whether the product is publicly visible
+                  example: true
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Validation error
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Product ID
+      responses:
+        '200':
+          description: Product deleted successfully
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - title
+        - description
+        - images
+        - category
+        - price
+        - stock
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the product (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9e6"
+        title:
+          type: string
+          description: Product title
+          example: "Smartphone X"
+        description:
+          type: string
+          description: Product description
+          example: "Latest model with high specs"
+        images:
+          type: array
+          items:
+            type: string
+          description: URLs of product images
+          example: ["https://example.com/img1.jpg", "https://example.com/img2.jpg"]
+        category:
+          type: string
+          description: Product category ID
+          example: "64f8c0a2f3e7b2b1d2a1c9e5"
+        price:
+          type: number
+          description: Product price
+          example: 999.99
+        salePercent:
+          type: number
+          description: Sale percentage
+          example: 10
+        cashbackPercent:
+          type: number
+          description: Cashback percentage
+          example: 5
+        stock:
+          type: number
+          description: Quantity in stock
+          example: 50
+        isPublic:
+          type: boolean
+          description: Whether the product is publicly visible
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the product was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the product was last updated
+          example: "2025-09-17T15:20:30.123Z"
