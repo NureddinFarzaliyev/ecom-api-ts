@@ -2,14 +2,17 @@ import { IProductCategory } from "@/features/productCategory/productCategory.typ
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
-const productCategorySchema = new mongoose.Schema({
-  title: { type: String, required: true, unique: true },
-  parentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ProductCategory",
-    default: null,
+const productCategorySchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true, unique: true },
+    parentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProductCategory",
+      default: null,
+    },
   },
-});
+  { timestamps: true },
+);
 
 export const ProductCategory: Model<IProductCategory> =
   mongoose.model<IProductCategory>("ProductCategory", productCategorySchema);

@@ -2,12 +2,19 @@ import { IWishlist } from "@/features/wishlist/wishlist.types";
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
-const wishlistSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  products: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "Product", default: [] },
-  ],
-});
+const wishlistSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    products: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Product", default: [] },
+    ],
+  },
+  { timestamps: true },
+);
 
 export const Wishlist: Model<IWishlist> = mongoose.model<IWishlist>(
   "Wishlist",
