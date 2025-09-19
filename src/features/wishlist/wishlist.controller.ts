@@ -1,4 +1,4 @@
-import { addProductsToWishlistService } from "@/features/wishlist/util/addProductsToWishlist.util";
+import { addProductsToWishlistService } from "@/features/wishlist/util/addProductsToWishlistService.util";
 import { initializeUserWishlist } from "@/features/wishlist/util/initializeUserWishlist.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";

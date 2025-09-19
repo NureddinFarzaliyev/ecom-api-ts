@@ -16,7 +16,8 @@ import {
 } from "@/shared/utils/email/generateVerificationEmail.util";
 import { generateUserCode } from "@/features/user/utils/generateUserCode.util";
 import { generateCsrfToken } from "@/shared/utils/tokens/csrf.util";
-import { addProductsToWishlistService } from "@/features/wishlist/util/addProductsToWishlist.util";
+import { addProductsToWishlistService } from "@/features/wishlist/util/addProductsToWishlistService.util";
+import { addProductsToCartService } from "@/features/cart/utils/addProductsToCartService";
 
 export const getUserConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("User config received", {
@@ -51,6 +52,11 @@ export const registerUser = async (
   const wishlist = req.body.wishlist;
   if (wishlist && wishlist.length > 0) {
     await addProductsToWishlistService(user._id, wishlist);
+  }
+
+  const cart = req.body.cart;
+  if (cart && cart.length > 0) {
+    await addProductsToCartService(user._id, cart);
   }
 
   const response = createSuccessResponse(

@@ -35,6 +35,7 @@ export const validateUserRegistration = (user: Partial<IUser>) => {
       .default(UserRole.USER),
     permissions: Joi.array().items(Joi.string()).default([]),
     wishlist: Joi.array().items(Joi.string()).default([]),
+    cart: Joi.array().items(Joi.string()).default([]),
   });
 
   return schema.validate(user);
