@@ -1,5 +1,7 @@
 import {
   User,
+  validateForgotPassword,
+  validateResetPassword,
   validateUserLogin,
   validateUserRegistration,
 } from "@/features/user/user.schema";
@@ -12,7 +14,7 @@ import { createSuccessResponse } from "@/shared/utils/responseFormatters/createS
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { createJWTToken, verifyJWTToken } from "@/shared/utils/tokens/jwt.util";
-import { IUser, UserRole } from "@/features/user/user.types";
+import { IUser, ResetPasswordBody, UserRole } from "@/features/user/user.types";
 import { sendNoreply } from "@/shared/utils/email/sendNoReply.util";
 import {
   generateVerificationEmail,
@@ -23,6 +25,12 @@ import { generateCsrfToken } from "@/shared/utils/tokens/csrf.util";
 import { addProductsToWishlistService } from "@/features/wishlist/util/addProductsToWishlistService.util";
 import { addProductsToCartService } from "@/features/cart/utils/addProductsToCartService";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
+import { generateResetPassToken } from "@/shared/utils/tokens/resetPass.util";
+import { hashToken } from "@/shared/utils/tokens/hashToken.util";
+import {
+  generatePasswordResetEmail,
+  passwordResetEmailSubject,
+} from "@/shared/utils/email/generatePasswordResetEmail.util";
 
 export const getUserConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("User config received", {
@@ -164,9 +172,70 @@ export const logoutUser = async (_req: Request, res: Response) => {
 };
 
 export const getMe = async (req: Request, res: Response) => {
-  console.log(req.userId);
-  const user = await User.findById(req.userId).select("-password");
+  const user = await User.findById(req.userId).select(
+    "-password -resetPasswordTokenHash -resetPasswordExpires",
+  );
   if (!user) throw new AuthenticationError("User not found");
   const response = createSuccessResponse("User data retrieved", user);
+  res.status(200).json(response);
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const body = sanitizeObject(req.body);
+  const { error } = validateForgotPassword(body);
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const response = createSuccessResponse("Email sent");
+  const user = await User.findOne({ email: body.email });
+  if (!user) {
+    res.status(200).json(response);
+    return;
+  }
+
+  const token = generateResetPassToken();
+  const tokenHash = hashToken(token);
+
+  user.resetPasswordTokenHash = tokenHash;
+  user.resetPasswordExpires = new Date(Date.now() + 1000 * 60 * 15); // 15 minutes
+  await user.save();
+
+  await sendNoreply(
+    passwordResetEmailSubject,
+    generatePasswordResetEmail(token, user._id),
+    user.email,
+  );
+
+  res.status(200).json(response);
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const body = sanitizeObject(req.body);
+  const { error } = validateResetPassword(body as ResetPasswordBody);
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const { token, id, newPassword } = body;
+
+  const user = await User.findOne({
+    _id: id,
+    resetPasswordTokenHash: hashToken(token),
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new ValidationError("Invalid or expired password reset token");
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  user.resetPasswordTokenHash = null;
+  user.resetPasswordExpires = null;
+  user.passwordChangedAt = new Date();
+
+  await user.save();
+
+  const response = createSuccessResponse("Password successfully reset");
   res.status(200).json(response);
 };

@@ -1,4 +1,4 @@
-import { IUser, UserRole } from "@/features/user/user.types";
+import { IUser, ResetPasswordBody, UserRole } from "@/features/user/user.types";
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema(
     phoneNumber: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     isVerified: { type: Boolean, default: false },
+    resetPasswordTokenHash: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
+    passwordChangedAt: { type: Date, default: null },
     password: { type: String, required: true },
     role: {
       type: String,
@@ -48,4 +51,22 @@ export const validateUserLogin = (user: Partial<IUser>) => {
   });
 
   return schema.validate(user);
+};
+
+export const validateForgotPassword = (user: Partial<IUser>) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+  });
+
+  return schema.validate(user);
+};
+
+export const validateResetPassword = (data: ResetPasswordBody) => {
+  const schema = Joi.object({
+    token: Joi.string().required(),
+    id: Joi.string().required(),
+    newPassword: Joi.string().min(6).required(),
+  });
+
+  return schema.validate(data);
 };

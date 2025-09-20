@@ -121,6 +121,43 @@ paths:
           description: Verification error 
         '500':
           description: Internal server error & email error
+  /users/forgot-password:
+    post:
+      summary: Initiate password reset process
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+  /users/reset-password:
+    post:
+      summary: Password reset process
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: token sent to email 
+                id:
+                  type: string
+                  description: User's unique identifier
+                newPassword:
+                  type: string
+                  description: New password for the user
 components:
   schemas:
     User:
