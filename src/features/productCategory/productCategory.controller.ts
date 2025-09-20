@@ -24,12 +24,13 @@ export const fetchAllProductCategories = async (
 };
 
 export const createProductCategory = async (req: Request, res: Response) => {
-  const { error } = validateCreateProductCategory(sanitizeObject(req.body));
+  const body = sanitizeObject(req.body);
+  const { error } = validateCreateProductCategory(body);
   if (error) {
     throw new ValidationError(error.details[0].message);
   }
 
-  const { parentId } = req.body;
+  const { parentId } = body;
 
   if (parentId) {
     const doesParentExist = await ProductCategory.findOne({ _id: parentId });
@@ -46,13 +47,14 @@ export const createProductCategory = async (req: Request, res: Response) => {
 };
 
 export const editProductCategory = async (req: Request, res: Response) => {
-  const { error } = validateEditProductCategory(sanitizeObject(req.body));
+  const body = sanitizeObject(req.body);
+  const { error } = validateEditProductCategory(body);
   if (error) {
     throw new ValidationError(error.details[0].message);
   }
 
   const { id } = req.params;
-  const { parentId } = req.body;
+  const { parentId } = body;
 
   if (parentId) {
     const doesParentExist = await ProductCategory.findOne({ _id: parentId });

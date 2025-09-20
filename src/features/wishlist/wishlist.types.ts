@@ -3,3 +3,9 @@ export interface IWishlist {
   userId: string;
   products: string[];
 }
+
+export interface AddToWishlistBody {
+  productId: string | string[];
+}
+
+export interface RemoveFromWishlistBody extends AddToWishlistBody { }

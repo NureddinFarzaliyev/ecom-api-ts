@@ -40,3 +40,12 @@ export const validateUserRegistration = (user: Partial<IUser>) => {
 
   return schema.validate(user);
 };
+
+export const validateUserLogin = (user: Partial<IUser>) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  });
+
+  return schema.validate(user);
+};

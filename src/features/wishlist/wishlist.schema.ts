@@ -1,4 +1,8 @@
-import { IWishlist } from "@/features/wishlist/wishlist.types";
+import {
+  AddToWishlistBody,
+  IWishlist,
+  RemoveFromWishlistBody,
+} from "@/features/wishlist/wishlist.types";
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
@@ -29,11 +33,15 @@ export const validateInitializeWishlist = (wishlist: IWishlist) => {
   return schema.validate(wishlist);
 };
 
-export const validateAddToWishlist = (body: string | string[]) => {
+export const validateAddToWishlist = (body: AddToWishlistBody) => {
   const schema = Joi.object({
     productId: Joi.alternatives()
       .try(Joi.string(), Joi.array().items(Joi.string()))
       .required(),
   });
   return schema.validate(body);
+};
+
+export const validateRemoveFromWishlist = (body: RemoveFromWishlistBody) => {
+  return validateAddToWishlist(body);
 };

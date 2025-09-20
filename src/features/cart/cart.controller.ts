@@ -1,7 +1,16 @@
-import { CartProduct } from "@/features/cart/cart.types";
+import {
+  validateAddProductsToCart,
+  validateRemoveProductsFromCart,
+} from "@/features/cart/cart.schema";
+import {
+  AddProductsToCartInput,
+  CartProduct,
+  RemoveProductsFromCartInput,
+} from "@/features/cart/cart.types";
 import { addProductsToCartService } from "@/features/cart/utils/addProductsToCartService";
 import { calculateCartStats } from "@/features/cart/utils/calculateCartStats.util";
 import { initializeUserCart } from "@/features/cart/utils/initializeUserCart.util";
+import { ValidationError } from "@/shared/utils/errorHandler/errors";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { Request, Response } from "express";
@@ -24,7 +33,13 @@ export const getUserCart = async (req: Request, res: Response) => {
 };
 
 export const addProductToCart = async (req: Request, res: Response) => {
-  const { products } = sanitizeObject(req.body);
+  const body = sanitizeObject(req.body);
+  const { error } = validateAddProductsToCart(body as AddProductsToCartInput);
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const { products } = body;
   const userId = req.userId;
 
   const { cart, status } = await addProductsToCartService(userId, products);
@@ -37,7 +52,15 @@ export const addProductToCart = async (req: Request, res: Response) => {
 };
 
 export const removeProductFromCart = async (req: Request, res: Response) => {
-  const { products } = sanitizeObject(req.body);
+  const body = sanitizeObject(req.body);
+  const { error } = validateRemoveProductsFromCart(
+    body as RemoveProductsFromCartInput,
+  );
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const { products } = body;
   const userId = req.userId;
 
   const { cart, status } = await initializeUserCart(userId);

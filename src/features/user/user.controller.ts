@@ -1,4 +1,8 @@
-import { User, validateUserRegistration } from "@/features/user/user.schema";
+import {
+  User,
+  validateUserLogin,
+  validateUserRegistration,
+} from "@/features/user/user.schema";
 import {
   AuthenticationError,
   ForbiddenError,
@@ -18,6 +22,7 @@ import { generateUserCode } from "@/features/user/utils/generateUserCode.util";
 import { generateCsrfToken } from "@/shared/utils/tokens/csrf.util";
 import { addProductsToWishlistService } from "@/features/wishlist/util/addProductsToWishlistService.util";
 import { addProductsToCartService } from "@/features/cart/utils/addProductsToCartService";
+import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 
 export const getUserConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("User config received", {
@@ -31,12 +36,13 @@ export const registerUser = async (
   res: Response,
   _next: NextFunction,
 ) => {
-  const { error } = validateUserRegistration(req.body);
+  const body = sanitizeObject(req.body);
+  const { error } = validateUserRegistration(body);
   if (error) throw new ValidationError(error.details[0].message);
 
-  const password = await bcrypt.hash(req.body.password, 10);
+  const password = await bcrypt.hash(body.password, 10);
   const code = generateUserCode();
-  const user: IUser = new User({ ...req.body, password, code });
+  const user: IUser = new User({ ...body, password, code });
 
   const emailToken = createJWTToken({ id: user._id }, { expiresIn: "1h" });
   await sendNoreply(
@@ -49,12 +55,12 @@ export const registerUser = async (
   const userObj = result.toObject();
   delete userObj.password;
 
-  const wishlist = req.body.wishlist;
+  const wishlist = body.wishlist;
   if (wishlist && wishlist.length > 0) {
     await addProductsToWishlistService(user._id, wishlist);
   }
 
-  const cart = req.body.cart;
+  const cart = body.cart;
   if (cart && cart.length > 0) {
     await addProductsToCartService(user._id, cart);
   }
@@ -84,7 +90,13 @@ export const verifyUser = async (req: Request, res: Response) => {
 };
 
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const body = sanitizeObject(req.body);
+  const { error } = validateUserLogin(body);
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const { email, password } = body;
 
   const user = await User.findOne({ email });
   if (!user) throw new ForbiddenError("Invalid email or password");

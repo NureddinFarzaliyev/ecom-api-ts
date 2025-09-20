@@ -10,3 +10,9 @@ export interface ICart {
   userId: string;
   products: CartProduct[];
 }
+
+export interface AddProductsToCartInput {
+  products: CartProduct[];
+}
+
+export interface RemoveProductsFromCartInput extends AddProductsToCartInput { }

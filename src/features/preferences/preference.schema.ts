@@ -5,10 +5,13 @@ import {
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
-const preferenceSchema = new mongoose.Schema({
-  key: { type: String, required: true, unique: true },
-  value: { type: mongoose.Schema.Types.Mixed, required: true },
-});
+const preferenceSchema = new mongoose.Schema(
+  {
+    key: { type: String, required: true, unique: true },
+    value: { type: mongoose.Schema.Types.Mixed, required: true },
+  },
+  { timestamps: true },
+);
 
 export const Preference: Model<IPreference> = mongoose.model<IPreference>(
   "Preference",
