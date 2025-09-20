@@ -116,7 +116,7 @@ export const loginUser = async (req: Request, res: Response) => {
   if (!isPasswordValid) throw new ForbiddenError("Invalid email or password");
 
   const token = createJWTToken(
-    { email: email, id: user._id },
+    { email: email, id: user._id, role: user.role },
     { expiresIn: "7d" },
   );
 

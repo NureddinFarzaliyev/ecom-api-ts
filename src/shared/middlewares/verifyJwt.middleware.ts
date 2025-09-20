@@ -14,9 +14,14 @@ export const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const user = verifyJWTToken(token) as { id: string; email: string };
+    const user = verifyJWTToken(token) as {
+      id: string;
+      email: string;
+      role: string;
+    };
     req.userId = user.id;
     req.userEmail = user.email;
+    req.userRole = user.role;
     next();
   } catch {
     const err = new AuthenticationError("Invalid JWT");
