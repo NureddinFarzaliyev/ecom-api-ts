@@ -1,3 +1,5 @@
+import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
+
 export const generateUserCode = () => {
-  return `${Date.now()}${Array.from({ length: 3 }, () => Math.floor(Math.random() * 10)).join("")}`;
+  return generateTimestampToken();
 };

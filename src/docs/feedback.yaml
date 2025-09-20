@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  title: Feedback API
+  version: 1.0.0
+
+paths:
+  /feedbacks:
+    get:
+      summary: Get all feedbacks
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of feedbacks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Feedback"
+
+    post:
+      summary: Create new feedback
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              guest:
+                summary: Guest user feedback
+                value:
+                  guest:
+                    name: "John"
+                    surname: "Doe"
+                    email: "john@example.com"
+                    phone: "+123456789"
+                  content: "Great service, I really enjoyed shopping!"
+              loggedInUser:
+                summary: Logged-in user feedback
+                value:
+                  content: "Please add more payment options."
+      responses:
+        "201":
+          description: Created feedback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Feedback"
+
+  /feedbacks/{id}:
+    get:
+      summary: Get single feedback by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Feedback object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Feedback"
+
+    patch:
+      summary: Edit feedback content
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              editContent:
+                value:
+                  content: "Updated feedback content goes here."
+      responses:
+        "200":
+          description: Updated feedback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Feedback"
+
+  /feedbacks/{id}/response:
+    patch:
+      summary: Respond to feedback (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              respondFeedback:
+                value:
+                  response: "Thank you for your feedback. We’ll improve this."
+                  status: "reviewed"
+      responses:
+        "200":
+          description: Feedback response updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Feedback"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Feedback:
+      type: object
+      properties:
+        _id:
+          type: string
+        code:
+          type: string
+        userId:
+          type: string
+          nullable: true
+        guest:
+          type: object
+          nullable: true
+          properties:
+            name: { type: string }
+            surname: { type: string }
+            email: { type: string }
+            phone: { type: string }
+        content:
+          type: string
+        response:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [pending, reviewed, resolved]
+        respondedBy:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

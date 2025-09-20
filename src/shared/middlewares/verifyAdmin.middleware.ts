@@ -1,5 +1,5 @@
 import { UserRole } from "@/features/user/user.types";
-import { AuthenticationError } from "@/shared/utils/errorHandler/errors";
+import { ForbiddenError } from "@/shared/utils/errorHandler/errors";
 import { createErrorResponse } from "@/shared/utils/responseFormatters/createErrorResponse.util";
 import { NextFunction, Request, Response } from "express";
 
@@ -9,7 +9,7 @@ export const verifyAdmin = (
   next: NextFunction,
 ) => {
   if (req.userRole !== UserRole.ADMIN) {
-    const err = new AuthenticationError("Forbidden");
+    const err = new ForbiddenError("Forbidden");
     const response = createErrorResponse("Forbidden", err);
     res.status(403).json(response);
     return;
