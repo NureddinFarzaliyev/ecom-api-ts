@@ -6,6 +6,7 @@ import {
   PreferenceCategory,
   PreferenceType,
 } from "@/features/preferences/preference.types";
+import { UploadField } from "@/shared/middlewares/multer.middleware";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
@@ -16,6 +17,7 @@ export const getPreferencesConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("Preferences config", {
     preferences: PreferenceType,
     categories: PreferenceCategory,
+    uploadFieldName: UploadField.PreferencesImage,
   });
   res.status(200).json(response);
 };
@@ -51,7 +53,15 @@ export const updatePreferences = async (req: Request, res: Response) => {
     throw new ValidationError(error.details[0].message);
   }
 
-  const updates = body.updates;
+  const updates =
+    typeof body.updates === "string" ? JSON.parse(body.updates) : body.updates;
+  const file = req.file as Express.Multer.File | undefined;
+
+  if (file && updates.length !== 1) {
+    throw new ValidationError(
+      "When uploading a file, only one preference can be updated at a time",
+    );
+  }
 
   const bulkOps: AnyBulkWriteOperation[] = [];
 
@@ -59,7 +69,7 @@ export const updatePreferences = async (req: Request, res: Response) => {
     bulkOps.push({
       updateOne: {
         filter: { key: update.key },
-        update: { $set: { value: update.value } },
+        update: { $set: { value: file ? file.path : update.value } },
         upsert: true,
       },
     });

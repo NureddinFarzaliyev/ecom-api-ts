@@ -17,13 +17,16 @@ export const Preference: Model<IPreference> = mongoose.model<IPreference>(
 
 export const validatePreferences = (preference: Partial<IPreference>) => {
   const schema = Joi.object({
-    updates: Joi.array().items(
-      Joi.object({
-        key: Joi.string()
-          .required()
-          .valid(...Object.values(PreferenceType)),
-        value: Joi.any().required(),
-      }),
+    updates: Joi.alternatives().try(
+      Joi.array().items(
+        Joi.object({
+          key: Joi.string()
+            .required()
+            .valid(...Object.values(PreferenceType)),
+          value: Joi.any().required(),
+        }),
+      ),
+      Joi.string(),
     ),
   });
   return schema.validate(preference);

@@ -32,6 +32,13 @@ export const errorHandler = (controller: AsyncController): RequestHandler => {
         return;
       }
 
+      // JSON syntax Errors
+      if (error instanceof SyntaxError && error.message.includes("JSON")) {
+        const errorResponse = createErrorResponse("Invalid JSON Syntax", error);
+        res.status(400).json(errorResponse);
+        return;
+      }
+
       // Custom App Errors
       if (error instanceof AppError) {
         const errorResponse = createErrorResponse(error.message, error);

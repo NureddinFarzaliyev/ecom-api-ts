@@ -6,14 +6,21 @@ import { sanitizeFilename } from "@/shared/utils/sanitizer/sanitizer.util";
 
 export enum UploadField {
   ProductImage = "productImage",
+  PreferencesImage = "preferencesImage",
 }
 
 const storage = multer.diskStorage({
   destination: (_req, file, cb) => {
     let folder = "uploads/others";
 
-    if (file.fieldname === UploadField.ProductImage)
-      folder = "uploads/products";
+    switch (file.fieldname) {
+      case UploadField.ProductImage:
+        folder = "uploads/products";
+        break;
+      case UploadField.PreferencesImage:
+        folder = "uploads/preferences";
+        break;
+    }
 
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder, { recursive: true });
