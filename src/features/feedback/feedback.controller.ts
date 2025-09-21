@@ -10,6 +10,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
+import { excludeFromUser } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
@@ -25,7 +26,7 @@ export const getFeedbacks = async (req: Request, res: Response) => {
 
   const feedbackList = await Feedback.find(findQuery)
     .sort({ createdAt: -1 })
-    .populate("userId");
+    .populate("userId", excludeFromUser);
   const response = createSuccessResponse(
     "Feedback retrieved successfully",
     feedbackList,
@@ -44,7 +45,7 @@ export const getSingleFeedback = async (req: Request, res: Response) => {
 
   const feedback = await Feedback.find(findQuery)
     .sort({ createdAt: -1 })
-    .populate("userId");
+    .populate("userId", excludeFromUser);
   if (!feedback) {
     throw new NotFoundError("Feedback not found");
   }

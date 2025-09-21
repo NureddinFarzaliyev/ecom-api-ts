@@ -7,6 +7,7 @@ import { sanitizeFilename } from "@/shared/utils/sanitizer/sanitizer.util";
 export enum UploadField {
   ProductImage = "productImage",
   PreferencesImage = "preferencesImage",
+  CustomOrderImage = "customOrderImage",
 }
 
 const storage = multer.diskStorage({
@@ -19,6 +20,9 @@ const storage = multer.diskStorage({
         break;
       case UploadField.PreferencesImage:
         folder = "uploads/preferences";
+        break;
+      case UploadField.CustomOrderImage:
+        folder = "uploads/customOrders";
         break;
     }
 

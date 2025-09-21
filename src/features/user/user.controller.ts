@@ -31,6 +31,7 @@ import {
   generatePasswordResetEmail,
   passwordResetEmailSubject,
 } from "@/shared/utils/email/generatePasswordResetEmail.util";
+import { excludeFromUser } from "@/shared/utils/population/excludeFromUser.util";
 
 export const getUserConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("User config received", {
@@ -172,9 +173,7 @@ export const logoutUser = async (_req: Request, res: Response) => {
 };
 
 export const getMe = async (req: Request, res: Response) => {
-  const user = await User.findById(req.userId).select(
-    "-password -resetPasswordTokenHash -resetPasswordExpires",
-  );
+  const user = await User.findById(req.userId).select(excludeFromUser);
   if (!user) throw new AuthenticationError("User not found");
   const response = createSuccessResponse("User data retrieved", user);
   res.status(200).json(response);

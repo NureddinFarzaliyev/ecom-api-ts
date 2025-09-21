@@ -1,0 +1,398 @@
+tags: 
+  - name: CustomOrders
+    description: Operations related to custom orders
+
+paths:
+  /custom-orders:
+    get:
+      summary: Get all custom orders
+      tags:
+        - CustomOrders
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized - Invalid credentials
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new custom order
+      tags:
+        - CustomOrders
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                guest:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "John"
+                    surname:
+                      type: string
+                      example: "Doe"
+                    email:
+                      type: string
+                      format: email
+                      example: "john@example.com"
+                    phoneNumber:
+                      type: string
+                      example: "+994501234567"
+                  description: Guest information if user is not logged in
+                content:
+                  type: string
+                  example: "I want to order a custom motorcycle helmet."
+                link:
+                  type: string
+                  example: "https://example.com/reference"
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Up to 5 images to upload
+            encoding:
+              images:
+                style: form
+                explode: false
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomOrder'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /custom-orders/config:
+    get:
+      summary: Get configuration details for custom orders
+      tags:
+        - CustomOrders
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+
+  /custom-orders/{id}:
+    get:
+      summary: Get a single custom order by ID
+      tags:
+        - CustomOrders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Custom order unique identifier
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomOrder'
+        '401':
+          description: Unauthorized - Invalid credentials
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a custom order by ID
+      tags:
+        - CustomOrders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Custom order unique identifier
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized - Invalid credentials
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      summary: Edit a custom order by ID
+      tags:
+        - CustomOrders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Custom order unique identifier
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "Updated order content"
+                link:
+                  type: string
+                  example: "https://example.com/new-link"
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Up to 5 images to upload
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomOrder'
+        '401':
+          description: Unauthorized - Invalid credentials
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+  /custom-orders/{id}/offer:
+    post:
+      summary: Create an offer for a custom order
+      tags:
+        - CustomOrders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Custom order unique identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - price
+              properties:
+                price:
+                  type: number
+                  example: 100.0
+                message:
+                  type: string
+                  example: "We can do this for you!"
+      responses:
+        '201':
+          description: Successful response
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized - Invalid credentials
+        '403':
+          description: Forbidden - Not admin
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+  /custom-orders/{id}/response:
+    post:
+      summary: Respond to a custom order offer
+      tags:
+        - CustomOrders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Custom order unique identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [ACCEPTED, REJECTED]
+                  example: "ACCEPTED"
+                rejectReason:
+                  type: string
+                  example: "Found a better price elsewhere."
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized - Invalid credentials
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+  /custom-orders/{id}/resolve:
+    post:
+      summary: Resolve a custom order (complete or cancel)
+      tags:
+        - CustomOrders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Custom order unique identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [COMPLETED, CANCELLED]
+                  example: "COMPLETED"
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized - Invalid credentials
+        '403':
+          description: Forbidden - Not admin
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    CustomOrder:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the custom order (MongoDB ObjectId)
+          example: "650c1e29f8db5a2e007d7b6e"
+        userId:
+          type: string
+          nullable: true
+          description: Reference to the user who created the order (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9e5"
+        code:
+          type: string
+          description: Unique code for the order
+          example: "ORD123456"
+        guest:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "John"
+            surname:
+              type: string
+              example: "Doe"
+            email:
+              type: string
+              format: email
+              example: "john@example.com"
+            phone:
+              type: string
+              example: "+994501234567"
+          description: Guest user information if not logged in
+        content:
+          type: string
+          description: Order description/content
+          example: "I want to order a custom motorcycle helmet."
+        link:
+          type: string
+          description: Optional link for reference
+          example: "https://example.com/reference"
+        images:
+          type: array
+          items:
+            type: string
+          description: Image URLs or file names
+          example: ["img1.jpg", "img2.png"]
+        status:
+          type: string
+          description: Status of the custom order
+          enum: [PENDING, OFFERED, ACCEPTED, REJECTED, COMPLETED, CANCELLED]
+          example: "PENDING"
+        resolvedBy:
+          type: string
+          nullable: true
+          description: Reference to the user who resolved the order
+        resolvedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Date when the order was resolved
+        offers:
+          type: array
+          items:
+            type: object
+            properties:
+              price:
+                type: number
+                description: Offer price
+                example: 100.0
+              message:
+                type: string
+                description: Offer message
+                example: "We can do this for you!"
+              rejectReason:
+                type: string
+                description: Reason for rejection, if rejected
+                example: "Not interested"
+              status:
+                type: string
+                enum: [PENDING, ACCEPTED, REJECTED]
+                description: Status of the offer
+                example: "PENDING"
+              date:
+                type: string
+                format: date-time
+                description: Date of the offer
+                example: "2025-09-17T12:34:56.789Z"
+              createdBy:
+                type: string
+                description: Reference to the user who created the offer
+                example: "64f8c0a2f3e7b2b1d2a1c9e5"
+          description: List of offers for the order
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the order was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the order was last updated
+          example: "2025-09-17T15:20:30.123Z"
