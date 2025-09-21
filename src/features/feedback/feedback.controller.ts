@@ -10,26 +10,47 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
+import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { excludeFromUser } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
 import { Request, Response } from "express";
 
+export const getFeedbackConfig = async (_req: Request, res: Response) => {
+  const config = { FeedbackStatus };
+  const response = createSuccessResponse(
+    "Feedback configuration retrieved successfully",
+    config,
+  );
+  return res.status(200).json(response);
+};
+
 export const getFeedbacks = async (req: Request, res: Response) => {
+  const queryParams = sanitizeObject(req.query);
+  const queryPage = queryParams.page || 1;
+  const queryLimit = queryParams.limit || 10;
+
   const { userRole, userId } = req;
   const findQuery: any = {};
-
   if (userRole !== UserRole.ADMIN) {
     findQuery.userId = userId;
   }
 
-  const feedbackList = await Feedback.find(findQuery)
-    .sort({ createdAt: -1 })
-    .populate("userId", excludeFromUser);
+  const { results: feedbacks, paginationData } = await paginate(
+    Feedback,
+    findQuery,
+    {
+      page: queryPage,
+      limit: queryLimit,
+      populate: [{ path: "userId", select: excludeFromUser }],
+    },
+  );
+
   const response = createSuccessResponse(
     "Feedback retrieved successfully",
-    feedbackList,
+    feedbacks,
+    { paginationData },
   );
   return res.status(200).json(response);
 };
@@ -43,12 +64,14 @@ export const getSingleFeedback = async (req: Request, res: Response) => {
     findQuery.userId = userId;
   }
 
-  const feedback = await Feedback.find(findQuery)
-    .sort({ createdAt: -1 })
-    .populate("userId", excludeFromUser);
+  const feedback = await Feedback.findOne(findQuery).populate(
+    "userId",
+    excludeFromUser,
+  );
   if (!feedback) {
     throw new NotFoundError("Feedback not found");
   }
+
   const response = createSuccessResponse(
     "Feedback retrieved successfully",
     feedback,
@@ -114,6 +137,26 @@ export const editFeedback = async (req: Request, res: Response) => {
     "Feedback updated successfully",
     newFeedback,
   );
+  return res.status(200).json(response);
+};
+
+export const deleteFeedback = async (req: Request, res: Response) => {
+  const { userId } = req;
+  const { id } = req.params;
+
+  const feedback = await Feedback.findOne({ _id: id, userId });
+  if (!feedback) {
+    throw new NotFoundError("Feedback not found");
+  }
+
+  if (feedback.status !== FeedbackStatus.PENDING) {
+    throw new ValidationError(
+      "Only feedback with 'pending' status can be deleted.",
+    );
+  }
+
+  await feedback.deleteOne();
+  const response = createSuccessResponse("Feedback deleted successfully", null);
   return res.status(200).json(response);
 };
 

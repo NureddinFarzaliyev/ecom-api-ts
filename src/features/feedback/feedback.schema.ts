@@ -13,7 +13,7 @@ const feedbackSchema = new mongoose.Schema(
       name: { type: String },
       surname: { type: String },
       email: { type: String },
-      phone: { type: String },
+      phoneNumber: { type: String },
     },
     content: { type: String, required: true },
     response: { type: String, default: null },
@@ -42,7 +42,7 @@ export const validateCreateFeedback = (data: Partial<IFeedback>) => {
       name: Joi.string().required(),
       surname: Joi.string().required(),
       email: Joi.string().email().required(),
-      phone: Joi.string().optional(),
+      phoneNumber: Joi.string().optional(),
     }),
     content: Joi.string().required().max(2000),
   });

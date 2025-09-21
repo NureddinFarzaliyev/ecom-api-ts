@@ -1,6 +1,8 @@
 import {
   createFeedback,
+  deleteFeedback,
   editFeedback,
+  getFeedbackConfig,
   getFeedbacks,
   getSingleFeedback,
   respondFeedback,
@@ -13,9 +15,11 @@ import { Router } from "express";
 
 export const feedbackRouter = Router();
 
+feedbackRouter.get("/config", errorHandler(getFeedbackConfig));
 feedbackRouter.get("/", verifyJwt, errorHandler(getFeedbacks));
 feedbackRouter.get("/:id", verifyJwt, errorHandler(getSingleFeedback));
 feedbackRouter.post("/", verifyJwtOptional, errorHandler(createFeedback));
+feedbackRouter.delete("/:id", verifyJwt, errorHandler(deleteFeedback));
 feedbackRouter.patch("/:id", verifyJwt, errorHandler(editFeedback));
 feedbackRouter.patch(
   "/:id/response",

@@ -322,7 +322,7 @@ components:
               type: string
               format: email
               example: "john@example.com"
-            phone:
+            phoneNumber:
               type: string
               example: "+994501234567"
           description: Guest user information if not logged in

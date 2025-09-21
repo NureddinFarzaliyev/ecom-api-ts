@@ -22,7 +22,7 @@ const customOrderSchema = new mongoose.Schema(
       name: { type: String },
       surname: { type: String },
       email: { type: String },
-      phone: { type: String },
+      phoneNumber: { type: String },
     },
     content: { type: String, required: true },
     link: { type: String },

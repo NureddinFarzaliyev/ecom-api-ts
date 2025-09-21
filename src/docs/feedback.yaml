@@ -32,7 +32,7 @@ paths:
                     name: "John"
                     surname: "Doe"
                     email: "john@example.com"
-                    phone: "+123456789"
+                    phoneNumber: "+123456789"
                   content: "Great service, I really enjoyed shopping!"
               loggedInUser:
                 summary: Logged-in user feedback
@@ -45,6 +45,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Feedback"
+  /feedbacks/config:
+    get:
+      summary: Get feedback configuration
+      tags:
+        - Feedbacks
+      responses:
+        "200":
+          description: Feedback configuration
   /feedbacks/{id}:
     get:
       summary: Get single feedback by ID
@@ -88,6 +96,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Feedback"
+    delete:
+      summary: Delete feedback by ID
+      tags:
+        - Feedbacks
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Feedback deleted successfully
   /feedbacks/{id}/response:
     patch:
       summary: Respond to feedback (admin only)
@@ -139,7 +160,7 @@ components:
             name: { type: string }
             surname: { type: string }
             email: { type: string }
-            phone: { type: string }
+            phoneNumber: { type: string }
         content:
           type: string
         response:
