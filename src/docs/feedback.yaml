@@ -1,14 +1,12 @@
-openapi: 3.0.0
-info:
-  title: Feedback API
-  version: 1.0.0
-
+tags: 
+  - name: Feedbacks
+    description: Operations related to user feedback 
 paths:
   /feedbacks:
     get:
       summary: Get all feedbacks
-      security:
-        - bearerAuth: []
+      tags:
+        - Feedbacks
       responses:
         "200":
           description: List of feedbacks
@@ -18,11 +16,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Feedback"
-
     post:
       summary: Create new feedback
-      security:
-        - bearerAuth: []
+      tags:
+        - Feedbacks
       requestBody:
         required: true
         content:
@@ -48,12 +45,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Feedback"
-
   /feedbacks/{id}:
     get:
       summary: Get single feedback by ID
-      security:
-        - bearerAuth: []
+      tags:
+        - Feedbacks
       parameters:
         - in: path
           name: id
@@ -67,11 +63,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Feedback"
-
     patch:
       summary: Edit feedback content
-      security:
-        - bearerAuth: []
+      tags:
+        - Feedbacks
       parameters:
         - in: path
           name: id
@@ -93,12 +88,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Feedback"
-
   /feedbacks/{id}/response:
     patch:
       summary: Respond to feedback (admin only)
-      security:
-        - bearerAuth: []
+      tags:
+        - Feedbacks
       parameters:
         - in: path
           name: id
@@ -121,14 +115,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Feedback"
-
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
   schemas:
     Feedback:
       type: object
