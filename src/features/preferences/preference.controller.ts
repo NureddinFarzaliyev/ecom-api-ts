@@ -5,6 +5,7 @@ import {
 import {
   PreferenceCategory,
   PreferenceType,
+  PreferenceUpdate,
 } from "@/features/preferences/preference.types";
 import { UploadField } from "@/shared/middlewares/multer.middleware";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
@@ -48,7 +49,7 @@ export const getAllPreferences = async (req: Request, res: Response) => {
 
 export const updatePreferences = async (req: Request, res: Response) => {
   const body = sanitizeObject(req.body);
-  const { error } = validatePreferences(body);
+  const { error } = validatePreferences(body as PreferenceUpdate);
   if (error) {
     throw new ValidationError(error.details[0].message);
   }

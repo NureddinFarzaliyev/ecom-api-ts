@@ -20,3 +20,7 @@ export interface IPreference extends Document {
   key: PreferenceType;
   value: any;
 }
+
+export interface PreferenceUpdate {
+  updates: string | { key: string; value: string };
+}

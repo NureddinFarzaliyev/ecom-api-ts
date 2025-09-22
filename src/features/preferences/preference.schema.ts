@@ -1,4 +1,7 @@
-import { IPreference } from "@/features/preferences/preference.types";
+import {
+  IPreference,
+  PreferenceUpdate,
+} from "@/features/preferences/preference.types";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
@@ -16,9 +19,7 @@ export const Preference: Model<IPreference> = mongoose.model<IPreference>(
   preferenceSchema,
 );
 
-export const validatePreferences = (preference: {
-  updates: string | { key: string; value: string };
-}) => {
+export const validatePreferences = (preference: PreferenceUpdate) => {
   let parsedPreference = { ...preference };
 
   if (typeof preference.updates === "string") {
