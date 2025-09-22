@@ -1,0 +1,95 @@
+tags: 
+  - name: Notifications 
+    description: Operations related to user notifications 
+paths:
+  /notifications:
+    get:
+      summary: Get user notifications 
+      tags:
+        - Notifications
+      responses:
+        "200":
+          description: List of notifications 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    patch:
+      summary: Mark notifications as read 
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - notifications
+              properties:
+                notificationIds:
+                  type: array
+                  items:
+                    type: string
+    delete:
+      summary: delete notifications  
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - notifications
+              properties:
+                notificationIds:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: notifications marked as read 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+  /notifications/config:
+    get:
+      summary: Get user notification configuration 
+      tags:
+        - Notifications
+      responses:
+        "200":
+          description: User notification configuration 
+components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+        type:
+          type: string 
+        title:
+          type: string
+        content:
+          type: string
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
