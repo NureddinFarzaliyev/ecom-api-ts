@@ -31,8 +31,8 @@ export async function paginate<T>(
     results,
     paginationData: {
       total,
-      page,
-      limit,
+      page: Number(page),
+      limit: Number(limit),
       totalPages: Math.ceil(total / limit),
       hasNextPage: page * limit < total,
       hasPrevPage: page > 1,

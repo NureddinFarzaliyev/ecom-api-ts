@@ -1,4 +1,5 @@
 import { cartRouter } from "@/features/cart/cart.router";
+import { cashbackRouter } from "@/features/cashback/cashback.router";
 import { customOrderRouter } from "@/features/customOrder/customOrder.router";
 import { feedbackRouter } from "@/features/feedback/feedback.router";
 import { preferenceRouter } from "@/features/preferences/preference.router";
@@ -24,3 +25,4 @@ v1Router.use("/carts", cartRouter);
 v1Router.use("/preferences", preferenceRouter);
 v1Router.use("/feedbacks", feedbackRouter);
 v1Router.use("/custom-orders", customOrderRouter);
+v1Router.use("/cashbacks", cashbackRouter);

@@ -1,0 +1,35 @@
+tags: 
+  - name: Cashbacks 
+    description: Operations related to user cashbacks 
+paths:
+  /cashbacks:
+    get:
+      summary: Get user cashbacks 
+      tags:
+        - Cashbacks 
+      responses:
+        "200":
+          description: List of cashbacks 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cashback"
+components:
+  schemas:
+    Cashback:
+      type: object
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+        amount:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
