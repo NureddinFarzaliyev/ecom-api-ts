@@ -1,4 +1,5 @@
 import { Cashback } from "@/features/cashback/cashback.schema";
+import { calculateTotalCashback } from "@/features/cashback/utils/calculateTotalCashback.util";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
@@ -22,10 +23,12 @@ export const getCashbacks = async (req: Request, res: Response) => {
     },
   );
 
+  const totalCashback = calculateTotalCashback(cashbacks);
+
   const response = createSuccessResponse(
     "Cashback fetched successfully",
     cashbacks,
-    { paginationData },
+    { paginationData, totalCashback },
   );
   return res.status(200).json(response);
 };
