@@ -1,4 +1,5 @@
 import { GuestType } from "@/shared/types/guest.types";
+import { Document } from "mongoose";
 
 export enum FeedbackStatus {
   PENDING = "pending",
@@ -6,7 +7,7 @@ export enum FeedbackStatus {
   RESOLVED = "resolved",
 }
 
-export interface IFeedback {
+export interface IFeedback extends Document {
   _id: string;
   code: string;
   userId: string | null;

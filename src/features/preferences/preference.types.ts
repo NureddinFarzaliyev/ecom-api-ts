@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export enum PreferenceType {
   social_ig = "social:ig",
   social_fb = "social:fb",
@@ -13,7 +15,7 @@ export enum PreferenceCategory {
   service = "service",
 }
 
-export interface IPreference {
+export interface IPreference extends Document {
   _id: string;
   key: PreferenceType;
   value: any;
