@@ -1,0 +1,45 @@
+import {
+  InstalmentRequest,
+  validateCreateInstalmentRequest,
+} from "@/features/instalmentRequest/instalmentRequest.schema";
+import { Preference } from "@/features/preferences/preference.schema";
+import { ValidationError } from "@/shared/utils/errorHandler/errors";
+import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
+import { ClientSession } from "mongoose";
+
+interface RequestDetails {
+  userId: string | null;
+  orderId: string;
+  fin: string;
+  totalPrice: number;
+  months: number;
+}
+
+export const createInstalmentRequest = async (
+  requestDetails: RequestDetails,
+  session: ClientSession | null = null,
+) => {
+  const { error } = validateCreateInstalmentRequest(requestDetails);
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const code = `IR-${generateTimestampToken()}`;
+
+  const commisionRate = await Preference.findOne({
+    key: `instalment:${requestDetails.months}`,
+  });
+  if (!commisionRate) {
+    throw new ValidationError(
+      "Invalid instalment months or commision rate not defined",
+    );
+  }
+
+  const instalmentRequest = new InstalmentRequest({
+    ...requestDetails,
+    commissionRate: commisionRate.value,
+    code,
+  });
+  await instalmentRequest.save({ session });
+  return instalmentRequest;
+};

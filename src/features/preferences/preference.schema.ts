@@ -35,7 +35,7 @@ export const validatePreferences = (preference: PreferenceUpdate) => {
       .items(
         Joi.object({
           key: Joi.string().required(),
-          value: Joi.string(),
+          value: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
         }),
       )
       .required(),

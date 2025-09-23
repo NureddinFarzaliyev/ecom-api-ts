@@ -1,3 +1,4 @@
+import { InstalmentMonths } from "@/features/instalmentRequest/instalmentRequest.types";
 import {
   IOrder,
   OrderDeliveryMethod,
@@ -101,6 +102,18 @@ export const validateCreateOrder = (data: Partial<IOrder>) => {
       method: Joi.string()
         .valid(...Object.values(OrderPaymentMethod))
         .required(),
+      instalmentMonths: Joi.when("method", {
+        is: OrderPaymentMethod.INSTALMENTS,
+        then: Joi.number()
+          .valid(...Object.values(InstalmentMonths))
+          .required(),
+        otherwise: Joi.forbidden(),
+      }),
+      instalmentFin: Joi.when("method", {
+        is: OrderPaymentMethod.INSTALMENTS,
+        then: Joi.string().required(),
+        otherwise: Joi.forbidden(),
+      }),
     }).required(),
     cashbackPayment: Joi.boolean().required(),
     // guest fields

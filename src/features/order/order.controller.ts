@@ -2,6 +2,7 @@ import { Cart } from "@/features/cart/cart.schema";
 import { initializeUserCart } from "@/features/cart/utils/initializeUserCart.util";
 import { calculateUserCashback } from "@/features/cashback/utils/calculateUserCashback.util";
 import { createCashback } from "@/features/cashback/utils/createCashback.util";
+import { createInstalmentRequest } from "@/features/instalmentRequest/utils/createInstalmentRequest.util";
 import { NotificationType } from "@/features/notification/notification.types";
 import { createNotification } from "@/features/notification/utils/createNotification.util";
 import {
@@ -9,7 +10,11 @@ import {
   validateCreateOrder,
   validateUpdateOrderStatus,
 } from "@/features/order/order.schema";
-import { IOrder, OrderStatus } from "@/features/order/order.types";
+import {
+  IOrder,
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/features/order/order.types";
 import { Product } from "@/features/product/product.schema";
 import { calculateProductCashback } from "@/features/product/utils/calculateProductCashback.util";
 import { calculateProductSalePrice } from "@/features/product/utils/calculateProductSalePrice.util";
@@ -24,7 +29,7 @@ import { createSuccessResponse } from "@/shared/utils/responseFormatters/createS
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
 import { NextFunction, Request, Response } from "express";
-import { ClientSession } from "mongoose";
+import { ClientSession, Document } from "mongoose";
 
 export const getOrders = async (req: Request, res: Response) => {
   const queryParams = sanitizeObject(req.query);
@@ -75,7 +80,7 @@ export const createOrder = async (
   req: Request,
   res: Response,
   _next: NextFunction,
-  session: ClientSession,
+  session?: ClientSession,
 ) => {
   const body = sanitizeObject(req.body);
   const { error } = validateCreateOrder(body as IOrder);
@@ -191,6 +196,22 @@ export const createOrder = async (
   };
 
   const order = new Order(orderData);
+
+  if (body.payment.method === OrderPaymentMethod.INSTALMENTS) {
+    const instalment = await createInstalmentRequest(
+      {
+        userId,
+        orderId: (order._id as Document).toString(),
+        fin: body.payment.instalmentFin,
+        totalPrice: netPrice,
+        months: body.payment.instalmentMonths,
+      },
+      session,
+    );
+
+    order.payment.instalmentId = instalment._id.toString();
+  }
+
   await order.save({ session });
 
   // ======== SUCCESS LINE ======== //

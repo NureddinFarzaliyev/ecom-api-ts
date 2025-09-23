@@ -8,6 +8,10 @@ export enum PreferenceType {
   social_yt = "social:yt",
   service_1 = "service:1",
   service_2 = "service:2",
+
+  instalment_3 = "instalment:3",
+  instalment_6 = "instalment:6",
+  instalment_9 = "instalment:9",
 }
 
 export enum PreferenceCategory {

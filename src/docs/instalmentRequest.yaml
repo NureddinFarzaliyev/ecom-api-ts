@@ -1,0 +1,144 @@
+tags:
+  - name: InstalmentRequests
+    description: Operations related to instalment requests
+
+paths:
+  /instalment-request:
+    get:
+      summary: Get all instalment requests
+      tags:
+        - InstalmentRequests
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized - Invalid credentials
+        '500':
+          description: Internal server error
+
+  /instalment-request/{id}:
+    get:
+      summary: Get single instalment request by ID
+      tags:
+        - InstalmentRequests
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Instalment request unique identifier
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstalmentRequest'
+        '401':
+          description: Unauthorized - Invalid credentials
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+  /instalment-request/{id}/status:
+    patch:
+      summary: Change instalment request status
+      tags:
+        - InstalmentRequests
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Instalment request unique identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [pending, approved, rejected, cancelled, ...] # Please specify all possible InstalmentRequestStatus values
+                  example: "approved"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstalmentRequest'
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized - Invalid credentials
+        '403':
+          description: Forbidden - Not admin
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    InstalmentRequest:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the instalment request (MongoDB ObjectId)
+          example: "650c1e29f8db5a2e007d7b7f"
+        userId:
+          type: string
+          nullable: true
+          description: Reference to the user who created the request (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9e5"
+        orderId:
+          type: string
+          description: Reference to the order for this instalment request (MongoDB ObjectId)
+          example: "65a2d1c8f8db5a2e007e1b2c"
+        fin:
+          type: string
+          description: FIN number of the requester
+          example: "ABC1234"
+        code:
+          type: string
+          description: Unique code for the request
+          example: "INSTREQ123456"
+        totalPrice:
+          type: number
+          description: Total price of the instalment
+          example: 1000.0
+        months:
+          type: number
+          description: Number of months for the instalment
+          example: 12
+        commissionRate:
+          type: number
+          description: Commission rate for the instalment
+          example: 2.5
+        status:
+          type: string
+          enum: [pending, approved, rejected, cancelled, ...] # Please specify all possible InstalmentRequestStatus values
+          description: Status of the instalment request
+          example: "pending"
+        paymentStatus:
+          type: string
+          enum: [waiting, in_progress, paid, failed, ...] # Please specify all possible InstalmentPaymentStatus values
+          description: Payment status of the instalment
+          example: "waiting"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the request was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the request was last updated
+          example: "2025-09-17T15:20:30.123Z"

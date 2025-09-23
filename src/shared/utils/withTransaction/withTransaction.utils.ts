@@ -6,7 +6,7 @@ type AsyncController = (
   res: Response,
   next: NextFunction,
   session: ClientSession,
-) => Promise<any>;
+) => Promise<any> | void;
 
 export const withTransaction = (
   controller: AsyncController,
