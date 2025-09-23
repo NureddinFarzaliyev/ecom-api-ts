@@ -7,70 +7,73 @@ import {
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
-const orderSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  guest: {
-    name: { type: String },
-    surname: { type: String },
-    email: { type: String },
-    phoneNumber: { type: String },
-  },
-  code: { type: String, required: true, unique: true },
-  products: [
-    {
-      productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+const orderSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    guest: {
+      name: { type: String },
+      surname: { type: String },
+      email: { type: String },
+      phoneNumber: { type: String },
+    },
+    code: { type: String, required: true, unique: true },
+    products: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        title: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true },
+        salePercent: { type: Number, required: true },
+        cashbackPercent: { type: Number, required: true },
+      },
+    ],
+    price: { type: Number, required: true },
+    saleApplied: { type: Number, required: true },
+    cashbackPayment: { type: Number, required: true },
+    netPrice: { type: Number, required: true },
+    cashbackEarned: { type: Number, required: true },
+    delivery: {
+      method: {
+        type: String,
+        enum: [...Object.values(OrderDeliveryMethod)],
         required: true,
       },
-      title: { type: String, required: true },
-      quantity: { type: Number, required: true },
-      price: { type: Number, required: true },
-      salePercent: { type: Number, required: true },
-      cashbackPercent: { type: Number, required: true },
+      location: {
+        type: {
+          type: String,
+          enum: ["Point"],
+          required: false,
+          default: "Point",
+        },
+        coordinates: {
+          type: [Number],
+          required: false,
+        },
+      },
+      address: { type: String },
     },
-  ],
-  price: { type: Number, required: true },
-  saleApplied: { type: Number, required: true },
-  cashbackPayment: { type: Number, required: true },
-  netPrice: { type: Number, required: true },
-  cashbackEarned: { type: Number, required: true },
-  delivery: {
-    method: {
-      type: String,
-      enum: [...Object.values(OrderDeliveryMethod)],
-      required: true,
-    },
-    location: {
-      type: {
+    payment: {
+      method: {
         type: String,
-        enum: ["Point"],
-        required: false,
-        default: "Point",
+        enum: [...Object.values(OrderPaymentMethod)],
+        required: true,
       },
-      coordinates: {
-        type: [Number],
-        required: false,
-      },
+      instalmentId: { type: String },
     },
-    address: { type: String },
-  },
-  payment: {
-    method: {
+    status: {
       type: String,
-      enum: [...Object.values(OrderPaymentMethod)],
-      required: true,
+      enum: [...Object.values(OrderStatus)],
+      default: OrderStatus.PENDING,
     },
-    instalmentId: { type: String },
+    statusChangedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    statusChangedAt: { type: Date },
   },
-  status: {
-    type: String,
-    enum: [...Object.values(OrderStatus)],
-    default: OrderStatus.PENDING,
-  },
-  statusChangedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  statusChangedAt: { type: Date },
-});
+  { timestamps: true },
+);
 
 export const Order: Model<IOrder> = mongoose.model<IOrder>(
   "Order",
