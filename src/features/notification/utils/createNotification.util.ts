@@ -5,9 +5,11 @@ import {
 import { INotification } from "@/features/notification/notification.types";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
+import { ClientSession } from "mongoose";
 
 export const createNotification = async (
   notification: Partial<Omit<INotification, "isRead">>,
+  session: ClientSession | null = null,
 ) => {
   const body = sanitizeObject(notification);
   const { error } = validateCreateNotification(body);
@@ -16,6 +18,6 @@ export const createNotification = async (
   }
 
   const newNotification = new Notification(body);
-  const result = await newNotification.save();
+  const result = await newNotification.save({ session });
   return result;
 };

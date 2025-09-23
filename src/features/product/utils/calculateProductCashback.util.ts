@@ -1,7 +1,13 @@
 import { IProduct } from "@/features/product/product.types";
 
+interface calculateProductCashbackInput {
+  cashbackPercent: number;
+  salePercent: number;
+  price: number;
+}
+
 export const calculateProductCashback = (
-  product: IProduct,
+  product: calculateProductCashbackInput | IProduct,
   quantity: number = 1,
 ) => {
   const cashbackP = product.cashbackPercent;

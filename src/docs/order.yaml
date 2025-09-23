@@ -1,0 +1,293 @@
+tags: 
+  - name: Orders
+    description: Operations related to orders
+
+paths:
+  /orders:
+    get:
+      summary: Get all orders
+      tags:
+        - Orders
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized - Invalid credentials
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new order
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                delivery:
+                  type: object
+                  properties:
+                    method:
+                      type: string
+                      enum: [courier, pickup, ...] # Please specify all possible OrderDeliveryMethod values
+                      example: "courier"
+                    location:
+                      type: object
+                      properties:
+                        coordinates:
+                          type: array
+                          items:
+                            type: number
+                          example: [12.123, 1234.1234]
+                      example:
+                        coordinates: [12.123, 1234.1234]
+                    address:
+                      type: string
+                      example: "test"
+                payment:
+                  type: object
+                  properties:
+                    method:
+                      type: string
+                      enum: [card, cash, ...] # Please specify all possible OrderPaymentMethod values
+                      example: "card"
+                    instalmentId:
+                      type: string
+                      example: "inst123"
+                guest:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "lorem"
+                    surname:
+                      type: string
+                      example: "ipsum"
+                    email:
+                      type: string
+                      format: email
+                      example: "lorem@ipsum.com"
+                    phoneNumber:
+                      type: string
+                      example: "+994514109698"
+                cart:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: string
+                        example: "68cd3cd36d54f1e12bd05fd0"
+                      quantity:
+                        type: integer
+                        example: 1
+                  example:
+                    - productId: "68cd3cd36d54f1e12bd05fd0"
+                      quantity: 1
+                    - productId: "68cd3cdc6d54f1e12bd05fd3"
+                      quantity: 4
+                cashbackPayment:
+                  type: boolean
+                  example: false
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /orders/{id}:
+    get:
+      summary: Get single order by ID
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Order unique identifier
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized - Invalid credentials
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+  /orders/{id}/status:
+    patch:
+      summary: Change order status
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Order unique identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [pending, paid, shipped, delivered, cancelled, ...] # Please specify all possible OrderStatus values
+                  example: "pending"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized - Invalid credentials
+        '403':
+          description: Forbidden - Not admin
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the order (MongoDB ObjectId)
+          example: "650c1e29f8db5a2e007d7b6e"
+        userId:
+          type: string
+          nullable: true
+          description: Reference to the user who created the order (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9e5"
+        guest:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "lorem"
+            surname:
+              type: string
+              example: "ipsum"
+            email:
+              type: string
+              format: email
+              example: "lorem@ipsum.com"
+            phoneNumber:
+              type: string
+              example: "+994514109698"
+          description: Guest information if user is not logged in
+        code:
+          type: string
+          description: Unique code for the order
+          example: "ORD123456"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                description: Product ID
+                example: "68cd3cd36d54f1e12bd05fd0"
+              title:
+                type: string
+                example: "Helmet ABC"
+              quantity:
+                type: integer
+                example: 1
+              price:
+                type: number
+                example: 100.0
+              salePercent:
+                type: number
+                example: 10
+              cashbackPercent:
+                type: number
+                example: 5
+          description: List of ordered products
+        price:
+          type: number
+          example: 300.0
+        saleApplied:
+          type: number
+          example: 30.0
+        cashbackPayment:
+          type: number
+          example: 0
+        netPrice:
+          type: number
+          example: 270.0
+        cashbackEarned:
+          type: number
+          example: 10.0
+        delivery:
+          type: object
+          properties:
+            method:
+              type: string
+              enum: [courier, pickup, ...] # Please specify all possible OrderDeliveryMethod values
+              example: "courier"
+            location:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: ["Point"]
+                  example: "Point"
+                coordinates:
+                  type: array
+                  items:
+                    type: number
+                  example: [12.123, 1234.1234]
+            address:
+              type: string
+              example: "test"
+        payment:
+          type: object
+          properties:
+            method:
+              type: string
+              enum: [card, cash, ...] # Please specify all possible OrderPaymentMethod values
+              example: "card"
+            instalmentId:
+              type: string
+              example: "inst123"
+        status:
+          type: string
+          enum: [pending, paid, shipped, delivered, cancelled, ...] # Please specify all possible OrderStatus values
+          example: "pending"
+        statusChangedBy:
+          type: string
+          nullable: true
+          description: Reference to the user who changed the order status
+        statusChangedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Date when the order status was changed
