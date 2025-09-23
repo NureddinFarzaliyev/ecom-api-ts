@@ -17,6 +17,7 @@ export enum PreferenceType {
 export enum PreferenceCategory {
   social = "social",
   service = "service",
+  instalment = "instalment",
 }
 
 export interface IPreference extends Document {

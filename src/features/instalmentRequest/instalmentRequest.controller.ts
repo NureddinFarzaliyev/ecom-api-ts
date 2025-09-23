@@ -2,8 +2,11 @@ import {
   InstalmentRequest,
   validateInstalmentRequestStatusUpdate,
 } from "@/features/instalmentRequest/instalmentRequest.schema";
+import { InstalmentRequestStatus } from "@/features/instalmentRequest/instalmentRequest.types";
 import { NotificationType } from "@/features/notification/notification.types";
 import { createNotification } from "@/features/notification/utils/createNotification.util";
+import { PreferenceCategory } from "@/features/preferences/preference.types";
+import { findPreferencesByCategory } from "@/features/preferences/util/findPreferencesByCategory.util";
 import { UserRole } from "@/features/user/user.types";
 import {
   NotFoundError,
@@ -14,6 +17,28 @@ import { excludeFromUser } from "@/shared/utils/population/excludeFromUser.util"
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { Request, Response } from "express";
+
+export const getInstalmentRequestConfig = async (
+  _req: Request,
+  res: Response,
+) => {
+  const monthPrefs = await findPreferencesByCategory(
+    PreferenceCategory.instalment,
+  );
+  const months = monthPrefs.map((pref) => ({
+    key: pref.key,
+    value: pref.value,
+  }));
+  const config = {
+    InstalmentRequestStatus,
+    months,
+  };
+  const response = createSuccessResponse(
+    "Instalment request config retrieved successfully",
+    config,
+  );
+  return res.status(200).json(response);
+};
 
 export const getInstalmentRequests = async (req: Request, res: Response) => {
   const queryParams = sanitizeObject(req.query);

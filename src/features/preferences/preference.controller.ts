@@ -7,6 +7,7 @@ import {
   PreferenceType,
   PreferenceUpdate,
 } from "@/features/preferences/preference.types";
+import { findPreferencesByCategory } from "@/features/preferences/util/findPreferencesByCategory.util";
 import { UploadField } from "@/shared/middlewares/multer.middleware";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
@@ -26,15 +27,7 @@ export const getPreferencesConfig = async (_req: Request, res: Response) => {
 export const getAllPreferences = async (req: Request, res: Response) => {
   const category = req.query.category as string | undefined;
   if (category) {
-    if (
-      !Object.values(PreferenceCategory).includes(
-        category as PreferenceCategory,
-      )
-    ) {
-      throw new ValidationError("Invalid category");
-    }
-    const regex = new RegExp(`^${category}:\\w+$`, "i");
-    const preferences = await Preference.find({ key: { $regex: regex } });
+    const preferences = await findPreferencesByCategory(category);
     const response = createSuccessResponse(
       `Preferences in category ${category}`,
       preferences,

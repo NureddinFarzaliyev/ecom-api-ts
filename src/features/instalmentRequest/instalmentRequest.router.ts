@@ -1,5 +1,6 @@
 import {
   changeInstalmentRequestStatus,
+  getInstalmentRequestConfig,
   getInstalmentRequests,
   getSingleInstalmentRequest,
 } from "@/features/instalmentRequest/instalmentRequest.controller";
@@ -14,6 +15,10 @@ instalmentRequestRouter.get(
   "/",
   verifyJwt,
   errorHandler(getInstalmentRequests),
+);
+instalmentRequestRouter.get(
+  "/config",
+  errorHandler(getInstalmentRequestConfig),
 );
 instalmentRequestRouter.get(
   "/:id",

@@ -15,6 +15,17 @@ paths:
           description: Unauthorized - Invalid credentials
         '500':
           description: Internal server error
+          
+  /instalment-request/config:
+    get:
+      summary: Get instalment request configuration
+      tags:
+        - InstalmentRequests
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
 
   /instalment-request/{id}:
     get:
