@@ -12,6 +12,7 @@ import {
 } from "@/features/order/order.schema";
 import {
   IOrder,
+  OrderDeliveryMethod,
   OrderPaymentMethod,
   OrderStatus,
 } from "@/features/order/order.types";
@@ -30,6 +31,21 @@ import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
 import { NextFunction, Request, Response } from "express";
 import { ClientSession, Document } from "mongoose";
+
+export const getOrderConfig = async (_req: Request, res: Response) => {
+  const config = {
+    OrderDeliveryMethod,
+    OrderPaymentMethod,
+    OrderStatus,
+  };
+
+  const response = createSuccessResponse(
+    "Order config retrieved successfully",
+    config,
+  );
+
+  return res.status(200).json(response);
+};
 
 export const getOrders = async (req: Request, res: Response) => {
   const queryParams = sanitizeObject(req.query);

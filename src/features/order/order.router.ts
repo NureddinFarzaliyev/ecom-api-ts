@@ -1,6 +1,7 @@
 import {
   changeOrderStatus,
   createOrder,
+  getOrderConfig,
   getOrders,
   getSingleOrder,
 } from "@/features/order/order.controller";
@@ -13,6 +14,7 @@ import { Router } from "express";
 export const orderRouter = Router();
 
 orderRouter.get("/", verifyJwt, errorHandler(getOrders));
+orderRouter.get("/config", errorHandler(getOrderConfig));
 orderRouter.get("/:id", verifyJwt, errorHandler(getSingleOrder));
 orderRouter.post("/", verifyJwtOptional, errorHandler(createOrder));
 orderRouter.patch(

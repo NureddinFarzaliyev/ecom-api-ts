@@ -102,6 +102,17 @@ paths:
           description: Validation error
         '500':
           description: Internal server error
+      
+  /orders/config:
+    get:
+      summary: Get order configuration
+      tags:
+        - Orders
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
 
   /orders/{id}:
     get:

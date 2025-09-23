@@ -2,7 +2,7 @@ import { GuestType } from "@/shared/types/guest.types";
 import { Document } from "mongoose";
 
 export enum OrderDeliveryMethod {
-  PICKUP = "picup",
+  PICKUP = "pickup",
   COURIER = "courier",
 }
 
