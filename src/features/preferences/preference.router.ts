@@ -4,6 +4,8 @@ import {
   updatePreferences,
 } from "@/features/preferences/preference.controller";
 import { upload, UploadField } from "@/shared/middlewares/multer.middleware";
+import { verifyAdmin } from "@/shared/middlewares/verifyAdmin.middleware";
+import { verifyJwt } from "@/shared/middlewares/verifyJwt.middleware";
 import { errorHandler } from "@/shared/utils/errorHandler/errorHandler";
 import { Router } from "express";
 
@@ -13,6 +15,8 @@ preferenceRouter.get("/", errorHandler(getAllPreferences));
 preferenceRouter.get("/config", errorHandler(getPreferencesConfig));
 preferenceRouter.patch(
   "/",
+  verifyJwt,
+  verifyAdmin,
   upload.single(UploadField.PreferencesImage),
   errorHandler(updatePreferences),
 );
