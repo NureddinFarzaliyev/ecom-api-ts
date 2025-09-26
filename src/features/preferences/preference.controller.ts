@@ -8,7 +8,10 @@ import {
   PreferenceUpdate,
 } from "@/features/preferences/preference.types";
 import { findPreferencesByCategory } from "@/features/preferences/util/findPreferencesByCategory.util";
-import { UploadField } from "@/shared/middlewares/multer.middleware";
+import {
+  fileLimitMB,
+  UploadField,
+} from "@/shared/middlewares/multer.middleware";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
@@ -20,6 +23,7 @@ export const getPreferencesConfig = async (_req: Request, res: Response) => {
     preferences: PreferenceType,
     categories: PreferenceCategory,
     uploadFieldName: UploadField.PreferencesImage,
+    fileLimitMB,
   });
   res.status(200).json(response);
 };

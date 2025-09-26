@@ -16,7 +16,10 @@ import {
   CustomOrderStatus,
 } from "@/features/customOrder/customOrder.types";
 import { UserRole } from "@/features/user/user.types";
-import { UploadField } from "@/shared/middlewares/multer.middleware";
+import {
+  fileLimitMB,
+  UploadField,
+} from "@/shared/middlewares/multer.middleware";
 import {
   NotFoundError,
   ValidationError,
@@ -39,6 +42,7 @@ export const getCustomOrdersConfig = async (_req: Request, res: Response) => {
     CustomOrderOfferStatus,
     CustomOrderOfferResponseStatus,
     uploadFieldName: UploadField.CustomOrderImage,
+    fileLimitMB,
   };
 
   const response = createSuccessResponse("Custom order config", config);

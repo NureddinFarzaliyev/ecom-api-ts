@@ -10,6 +10,9 @@ export enum UploadField {
   CustomOrderImage = "customOrderImage",
 }
 
+export const fileLimitMB = 10;
+const fileSize = fileLimitMB * 1024 * 1024;
+
 const storage = multer.diskStorage({
   destination: (_req, file, cb) => {
     let folder = "uploads/others";
@@ -56,4 +59,8 @@ const fileFilter = (
   }
 };
 
-export const upload = multer({ storage, fileFilter });
+export const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize },
+});

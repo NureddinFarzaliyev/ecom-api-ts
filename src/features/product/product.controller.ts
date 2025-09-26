@@ -4,7 +4,10 @@ import {
   validateEditProduct,
 } from "@/features/product/product.schema";
 import { ProductCategory } from "@/features/productCategory/productCategory.schema";
-import { UploadField } from "@/shared/middlewares/multer.middleware";
+import {
+  fileLimitMB,
+  UploadField,
+} from "@/shared/middlewares/multer.middleware";
 import {
   NotFoundError,
   ValidationError,
@@ -21,6 +24,7 @@ import { Request, Response } from "express";
 export const getProductConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("Product config", {
     uploadFieldName: UploadField.ProductImage,
+    fileLimitMB,
   });
   res.status(200).json(response);
 };
