@@ -9,7 +9,7 @@ import { ClientSession } from "mongoose";
 
 export const createNotification = async (
   notification: Partial<Omit<INotification, "isRead">>,
-  session: ClientSession | null = null,
+  session?: ClientSession,
 ) => {
   const body = sanitizeObject(notification);
   const { error } = validateCreateNotification(body);

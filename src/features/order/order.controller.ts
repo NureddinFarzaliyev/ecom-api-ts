@@ -1,4 +1,4 @@
-import { Cart } from "@/features/cart/cart.schema";
+import { clearUserCart } from "@/features/cart/utils/clearUserCart.util";
 import { initializeUserCart } from "@/features/cart/utils/initializeUserCart.util";
 import { calculateUserCashback } from "@/features/cashback/utils/calculateUserCashback.util";
 import { createCashback } from "@/features/cashback/utils/createCashback.util";
@@ -96,8 +96,9 @@ export const createOrder = async (
   req: Request,
   res: Response,
   _next: NextFunction,
-  session?: ClientSession,
 ) => {
+  const session = req.session as ClientSession;
+
   const body = sanitizeObject(req.body);
   const { error } = validateCreateOrder(body as IOrder);
   if (error) {
@@ -246,14 +247,14 @@ export const createOrder = async (
     );
 
     // clear user's cart
-    await Cart.findOneAndUpdate({ userId }, { products: [] }, { session });
+    await clearUserCart(userId, session);
 
     // deduct cashback if applied
     if (paidFromCashback > 0) {
-      await createCashback(userId, -paidFromCashback, null, session);
+      await createCashback(userId, -paidFromCashback, undefined, session);
     }
 
-    await createCashback(userId, cashbackEarned, null, session);
+    await createCashback(userId, cashbackEarned, undefined, session);
   }
 
   const response = createSuccessResponse("Order created successfully", order);

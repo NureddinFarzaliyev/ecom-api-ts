@@ -10,8 +10,8 @@ import { ClientSession } from "mongoose";
 export const createCashback = async (
   userId: string,
   amount: number,
-  notification: string | null = null,
-  session: ClientSession | null = null,
+  notification?: string,
+  session?: ClientSession,
 ) => {
   const { error } = validateCreateCashback({ userId, amount });
   if (error) {
@@ -19,12 +19,15 @@ export const createCashback = async (
   }
 
   if (notification) {
-    createNotification({
-      userId,
-      title: "Cashback",
-      content: notification,
-      type: NotificationType.INFO,
-    });
+    createNotification(
+      {
+        userId,
+        title: "Cashback",
+        content: notification,
+        type: NotificationType.INFO,
+      },
+      session,
+    );
   }
 
   const cashback = new Cashback({ userId, amount });

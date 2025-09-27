@@ -3,6 +3,7 @@ import {
   validateCreateInstalmentRequest,
 } from "@/features/instalmentRequest/instalmentRequest.schema";
 import { Preference } from "@/features/preferences/preference.schema";
+import { PreferenceCategory } from "@/features/preferences/preference.types";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
 import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
 import { ClientSession } from "mongoose";
@@ -17,7 +18,7 @@ interface RequestDetails {
 
 export const createInstalmentRequest = async (
   requestDetails: RequestDetails,
-  session: ClientSession | null = null,
+  session?: ClientSession,
 ) => {
   const { error } = validateCreateInstalmentRequest(requestDetails);
   if (error) {
@@ -27,7 +28,7 @@ export const createInstalmentRequest = async (
   const code = `IR-${generateTimestampToken()}`;
 
   const commisionRate = await Preference.findOne({
-    key: `instalment:${requestDetails.months}`,
+    key: `${PreferenceCategory.instalment}:${requestDetails.months}`,
   });
   if (!commisionRate) {
     throw new ValidationError(

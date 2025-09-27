@@ -45,6 +45,7 @@ export const getAllPreferences = async (req: Request, res: Response) => {
 };
 
 export const updatePreferences = async (req: Request, res: Response) => {
+  const session = req.session;
   const body = sanitizeObject(req.body);
   const { error } = validatePreferences(body as PreferenceUpdate);
   if (error) {
@@ -74,7 +75,7 @@ export const updatePreferences = async (req: Request, res: Response) => {
   });
 
   if (bulkOps.length > 0) {
-    await Preference.bulkWrite(bulkOps);
+    await Preference.bulkWrite(bulkOps, { session, ordered: true });
   }
 
   const updatedPreferences = await Preference.find({});

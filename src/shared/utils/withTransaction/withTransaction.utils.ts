@@ -1,21 +1,22 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
-import { ClientSession, startSession } from "mongoose";
+import mongoose from "mongoose";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 
-type AsyncController = (
+type TransactionController = (
   req: Request,
   res: Response,
   next: NextFunction,
-  session: ClientSession,
 ) => Promise<any> | void;
 
 export const withTransaction = (
-  controller: AsyncController,
+  controller: TransactionController,
 ): RequestHandler => {
   return async (req, res, next) => {
-    const session = await startSession();
+    const session = await mongoose.startSession();
     session.startTransaction();
+
+    req.session = session;
     try {
-      await controller(req, res, next, session);
+      await controller(req, res, next);
       await session.commitTransaction();
     } catch (error) {
       await session.abortTransaction();
