@@ -11,7 +11,7 @@ import {
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
-import { NextFunction, Request, Response } from "express";
+import { CookieOptions, NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { createJWTToken, verifyJWTToken } from "@/shared/utils/tokens/jwt.util";
 import { IUser, ResetPasswordBody, UserRole } from "@/features/user/user.types";
@@ -98,6 +98,15 @@ export const verifyUser = async (req: Request, res: Response) => {
   res.status(200).json(response);
 };
 
+const generalCookieOptions: CookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  // domain: process.env.DOMAIN,
+  path: "/",
+  partitioned: true,
+};
+
 export const loginUser = async (req: Request, res: Response) => {
   const body = sanitizeObject(req.body);
   const { error } = validateUserLogin(body);
@@ -124,24 +133,14 @@ export const loginUser = async (req: Request, res: Response) => {
   const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
 
   res.cookie("jwt", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    // domain: process.env.DOMAIN,
-    path: "/",
-    partitioned: true,
+    ...generalCookieOptions,
     maxAge,
   });
 
   const csrfToken = generateCsrfToken();
 
   res.cookie("XSRF-TOKEN", csrfToken, {
-    httpOnly: false,
-    secure: true,
-    sameSite: "none",
-    // domain: process.env.DOMAIN,
-    path: "/",
-    partitioned: true,
+    ...generalCookieOptions,
     maxAge,
   });
 
@@ -152,22 +151,8 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export const logoutUser = async (_req: Request, res: Response) => {
-  res.clearCookie("jwt", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    // domain: process.env.DOMAIN,
-    path: "/",
-    partitioned: true,
-  });
-  res.clearCookie("XSRF-TOKEN", {
-    httpOnly: false,
-    secure: true,
-    sameSite: "none",
-    // domain: process.env.DOMAIN,
-    path: "/",
-    partitioned: true,
-  });
+  res.clearCookie("jwt", generalCookieOptions);
+  res.clearCookie("XSRF-TOKEN", generalCookieOptions);
   const response = createSuccessResponse("Sucessfully logged out");
   res.status(200).json(response);
 };
