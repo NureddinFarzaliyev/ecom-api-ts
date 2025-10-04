@@ -1,0 +1,220 @@
+tags:
+  - name: SalesCampaigns
+    description: Operations related to sales campaigns
+paths:
+  /sales-campaigns/config:
+    get:
+      summary: Get sales campaign configuration details
+      tags:
+        - SalesCampaigns
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+
+  /sales-campaigns:
+    get:
+      summary: Get list of sales campaigns
+      tags:
+        - SalesCampaigns
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalesCampaign'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new sales campaign
+      tags:
+        - SalesCampaigns
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - banner
+              properties:
+                title:
+                  type: string
+                  description: Title of the sales campaign
+                  example: "Winter Promo"
+                description:
+                  type: string
+                  description: Description of the sales campaign
+                  example: "Up to 50% off on selected items"
+                banner:
+                  type: string
+                  format: binary
+                  description: Banner image for the sales campaign
+                products:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of product IDs included in the campaign
+                  example: ["64f8c0a2f3e7b2b1d2a1c9e6", "64f8c0a2f3e7b2b1d2a1c9e7"]
+                isActive:
+                  type: boolean
+                  description: Whether the campaign is active
+                  example: true
+      responses:
+        '201':
+          description: Sales campaign created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesCampaign'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /sales-campaigns/{id}:
+    get:
+      summary: Get a single sales campaign by ID
+      tags:
+        - SalesCampaigns
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Sales Campaign ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesCampaign'
+        '404':
+          description: Sales campaign not found
+        '500':
+          description: Internal server error
+    patch:
+      summary: Edit a sales campaign
+      tags:
+        - SalesCampaigns
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Sales Campaign ID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the sales campaign
+                  example: "Winter Promo Updated"
+                description:
+                  type: string
+                  description: Description of the sales campaign
+                  example: "Up to 70% off on selected items"
+                banner:
+                  type: string
+                  format: binary
+                  description: New banner image for the sales campaign
+                products:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of product IDs included in the campaign
+                  example: ["64f8c0a2f3e7b2b1d2a1c9e6", "64f8c0a2f3e7b2b1d2a1c9e7"]
+                isActive:
+                  type: boolean
+                  description: Whether the campaign is active
+                  example: false
+      responses:
+        '200':
+          description: Sales campaign updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesCampaign'
+        '400':
+          description: Validation error
+        '404':
+          description: Sales campaign not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a sales campaign
+      tags:
+        - SalesCampaigns
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Sales Campaign ID
+      responses:
+        '200':
+          description: Sales campaign deleted successfully
+        '404':
+          description: Sales campaign not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    SalesCampaign:
+      type: object
+      required:
+        - title
+        - description
+        - banner
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the sales campaign (MongoDB ObjectId)
+          example: "651f8c0a2f3e7b2b1d2a1c9e9"
+        title:
+          type: string
+          description: Sales campaign title
+          example: "Winter Promo"
+        description:
+          type: string
+          description: Sales campaign description
+          example: "Up to 50% off on selected items"
+        banner:
+          type: string
+          description: URL of the banner image
+          example: "https://example.com/banner.jpg"
+        products:
+          type: array
+          items:
+            type: string
+          description: Array of product IDs included in the campaign
+          example: ["64f8c0a2f3e7b2b1d2a1c9e6", "64f8c0a2f3e7b2b1d2a1c9e7"]
+        isActive:
+          type: boolean
+          description: Whether the campaign is active
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the campaign was created
+          example: "2025-10-04T08:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the campaign was last updated
+          example: "2025-10-04T08:45:00.000Z"
