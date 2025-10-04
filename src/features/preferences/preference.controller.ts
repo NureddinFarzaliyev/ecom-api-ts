@@ -13,6 +13,7 @@ import {
   UploadField,
 } from "@/shared/middlewares/multer.middleware";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
+import { parseStringJSON } from "@/shared/utils/JSONParsers/parseStringJSON.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { Request, Response } from "express";
@@ -53,7 +54,10 @@ export const updatePreferences = async (req: Request, res: Response) => {
   }
 
   const updates =
-    typeof body.updates === "string" ? JSON.parse(body.updates) : body.updates;
+    typeof body.updates === "string"
+      ? parseStringJSON(body.updates)
+      : body.updates;
+
   const file = req.file as Express.Multer.File | undefined;
 
   if (file && updates.length !== 1) {

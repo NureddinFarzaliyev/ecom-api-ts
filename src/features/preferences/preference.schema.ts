@@ -2,7 +2,7 @@ import {
   IPreference,
   PreferenceUpdate,
 } from "@/features/preferences/preference.types";
-import { ValidationError } from "@/shared/utils/errorHandler/errors";
+import { parseStringJSON } from "@/shared/utils/JSONParsers/parseStringJSON.util";
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
@@ -21,14 +21,7 @@ export const Preference: Model<IPreference> = mongoose.model<IPreference>(
 
 export const validatePreferences = (preference: PreferenceUpdate) => {
   let parsedPreference = { ...preference };
-
-  if (typeof preference.updates === "string") {
-    try {
-      parsedPreference.updates = JSON.parse(preference.updates as string);
-    } catch (error) {
-      throw new ValidationError("Invalid guest JSON format");
-    }
-  }
+  parsedPreference.updates = parseStringJSON(preference.updates);
 
   const schema = Joi.object({
     updates: Joi.array()

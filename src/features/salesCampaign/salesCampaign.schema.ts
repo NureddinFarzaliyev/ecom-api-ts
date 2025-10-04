@@ -1,5 +1,5 @@
 import { ISalesCampaign } from "@/features/salesCampaign/salesCampaign.types";
-import { ValidationError } from "@/shared/utils/errorHandler/errors";
+import { parseStringJSON } from "@/shared/utils/JSONParsers/parseStringJSON.util";
 import Joi from "joi";
 import mongoose, { Model, Schema } from "mongoose";
 
@@ -19,14 +19,7 @@ export const SalesCampaign: Model<ISalesCampaign> =
 
 export const validateCreateSalesCampaign = (data: Partial<ISalesCampaign>) => {
   let parsedCampaign = { ...data };
-
-  if (typeof data.products === "string") {
-    try {
-      parsedCampaign.products = JSON.parse(data.products as string);
-    } catch (error) {
-      throw new ValidationError("Invalid JSON format");
-    }
-  }
+  parsedCampaign.products = parseStringJSON(data.products);
 
   const schema = Joi.object({
     title: Joi.string().required(),
@@ -40,14 +33,7 @@ export const validateCreateSalesCampaign = (data: Partial<ISalesCampaign>) => {
 
 export const validateEditSalesCampaign = (data: Partial<ISalesCampaign>) => {
   let parsedCampaign = { ...data };
-
-  if (typeof data.products === "string") {
-    try {
-      parsedCampaign.products = JSON.parse(data.products as string);
-    } catch (error) {
-      throw new ValidationError("Invalid JSON format");
-    }
-  }
+  parsedCampaign.products = parseStringJSON(data.products);
 
   const schema = Joi.object({
     title: Joi.string(),

@@ -10,6 +10,7 @@ import {
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
 import { deleteFiles } from "@/shared/utils/files/deleteFiles.util";
+import { parseStringJSON } from "@/shared/utils/JSONParsers/parseStringJSON.util";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
@@ -69,8 +70,9 @@ export const createSalesCampaign = async (req: Request, res: Response) => {
 
   const parsedProducts =
     typeof body.products === "string"
-      ? JSON.parse(body.products)
+      ? parseStringJSON(body.products)
       : body.products;
+
   body.products = parsedProducts;
 
   if (Array.isArray(body.products)) {
@@ -115,7 +117,7 @@ export const editSalesCampaign = async (req: Request, res: Response) => {
   if (body.products) {
     const parsedProducts =
       typeof body.products === "string"
-        ? JSON.parse(body.products)
+        ? parseStringJSON(body.products)
         : body.products;
     body.products = parsedProducts;
 

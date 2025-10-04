@@ -7,7 +7,7 @@ import {
   CustomOrderStatus,
   ICustomOrder,
 } from "@/features/customOrder/customOrder.types";
-import { ValidationError } from "@/shared/utils/errorHandler/errors";
+import { parseStringJSON } from "@/shared/utils/JSONParsers/parseStringJSON.util";
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
@@ -66,13 +66,7 @@ export const CustomOrder: Model<ICustomOrder> = mongoose.model<ICustomOrder>(
 
 export const validateCreateCustomOrder = (order: Partial<ICustomOrder>) => {
   let parserOrder = { ...order };
-  if (typeof order.guest === "string") {
-    try {
-      parserOrder.guest = JSON.parse(order.guest as string);
-    } catch (error) {
-      throw new ValidationError("Invalid guest JSON format");
-    }
-  }
+  parserOrder.guest = parseStringJSON(order.guest);
 
   const schema = Joi.object({
     guest: Joi.object({
