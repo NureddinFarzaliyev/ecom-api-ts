@@ -70,3 +70,13 @@ export const validateResetPassword = (data: ResetPasswordBody) => {
 
   return schema.validate(data);
 };
+
+export const validateUserUpdate = (user: Partial<IUser>) => {
+  const schema = Joi.object({
+    name: Joi.string(),
+    surname: Joi.string(),
+    phoneNumber: Joi.string(),
+  });
+
+  return schema.validate(user);
+};

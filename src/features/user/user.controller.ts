@@ -4,6 +4,7 @@ import {
   validateResetPassword,
   validateUserLogin,
   validateUserRegistration,
+  validateUserUpdate,
 } from "@/features/user/user.schema";
 import {
   AuthenticationError,
@@ -221,5 +222,22 @@ export const resetPassword = async (req: Request, res: Response) => {
   await user.save();
 
   const response = createSuccessResponse("Password successfully reset");
+  res.status(200).json(response);
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+  const body = sanitizeObject(req.body);
+  const { error } = validateUserUpdate(body);
+
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const user = await User.findById(req.userId);
+  if (!user) throw new AuthenticationError("User not found");
+
+  Object.assign(user, body);
+  const newUser = await user.save();
+  const response = createSuccessResponse("User successfully updated", newUser);
   res.status(200).json(response);
 };

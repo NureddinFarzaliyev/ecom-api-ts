@@ -6,6 +6,7 @@ import {
   logoutUser,
   registerUser,
   resetPassword,
+  updateUser,
   verifyUser,
 } from "@/features/user/user.controller";
 import { verifyJwt } from "@/shared/middlewares/verifyJwt.middleware";
@@ -20,5 +21,6 @@ userRouter.get("/config", errorHandler(getUserConfig));
 userRouter.get("/verify", errorHandler(verifyUser));
 userRouter.get("/logout", errorHandler(logoutUser));
 userRouter.get("/me", verifyJwt, errorHandler(getMe));
+userRouter.patch("/me", verifyJwt, errorHandler(updateUser));
 userRouter.post("/forgot-password", errorHandler(forgotPassword));
 userRouter.post("/reset-password", errorHandler(resetPassword));

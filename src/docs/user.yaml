@@ -87,6 +87,39 @@ paths:
           description: Forbidden - User not verified
         '500':
           description: Internal server error
+    patch:
+      summary: Update current user details
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: First name of the user
+                surname:
+                  type: string
+                  description: Last name of the user
+                phoneNumber:
+                  type: string
+                  description: User's phone number
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request - Invalid input data
+        '401':
+          description: Unauthorized - Invalid credentials
+        '500':
+          description: Internal server error
   /users/logout:
     post:
       summary: Logout user
