@@ -131,7 +131,7 @@ export const loginUser = async (req: Request, res: Response) => {
     { expiresIn: "7d" },
   );
 
-  const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
+  const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
   res.cookie("jwt", token, {
     ...generalCookieOptions,
