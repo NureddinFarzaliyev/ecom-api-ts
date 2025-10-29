@@ -8,5 +8,7 @@ export const parseStringJSON = (string: any) => {
     } catch (error) {
       throw new ValidationError("Invalid JSON format");
     }
+  } else {
+    return string;
   }
 };

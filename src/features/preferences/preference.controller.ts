@@ -82,7 +82,7 @@ export const updatePreferences = async (req: Request, res: Response) => {
     await Preference.bulkWrite(bulkOps, { session, ordered: true });
   }
 
-  const updatedPreferences = await Preference.find({});
+  const updatedPreferences = await Preference.find({}).session(session ?? null);
   const response = createSuccessResponse(
     "Updated Preferences",
     updatedPreferences,
