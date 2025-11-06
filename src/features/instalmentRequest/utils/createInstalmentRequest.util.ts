@@ -5,7 +5,7 @@ import {
 import { Preference } from "@/features/preferences/preference.schema";
 import { PreferenceCategory } from "@/features/preferences/preference.types";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
-import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
+import { generateNanoIdToken } from "@/shared/utils/tokens/nanoidToken.util";
 import { ClientSession } from "mongoose";
 
 interface RequestDetails {
@@ -25,7 +25,7 @@ export const createInstalmentRequest = async (
     throw new ValidationError(error.details[0].message);
   }
 
-  const code = `IR-${generateTimestampToken()}`;
+  const code = `IR-${generateNanoIdToken()}`;
 
   const commisionRate = await Preference.findOne({
     key: `${PreferenceCategory.instalment}:${requestDetails.months}`,

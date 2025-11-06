@@ -32,7 +32,7 @@ import {
 } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
-import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
+import { generateNanoIdToken } from "@/shared/utils/tokens/nanoidToken.util";
 import { Request, Response } from "express";
 
 export const getCustomOrdersConfig = async (_req: Request, res: Response) => {
@@ -121,7 +121,7 @@ export const createCustomOrder = async (req: Request, res: Response) => {
     body.guest = JSON.parse(body.guest as string);
   }
 
-  const code = `CO-${generateTimestampToken()}`;
+  const code = `CO-${generateNanoIdToken()}`;
   body.code = code;
   body.status = CustomOrderStatus.PENDING;
 

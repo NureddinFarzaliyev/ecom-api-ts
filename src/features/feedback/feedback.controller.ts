@@ -14,7 +14,7 @@ import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { excludeFromUser } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
-import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
+import { generateNanoIdToken } from "@/shared/utils/tokens/nanoidToken.util";
 import { Request, Response } from "express";
 
 export const getFeedbackConfig = async (_req: Request, res: Response) => {
@@ -98,7 +98,7 @@ export const createFeedback = async (req: Request, res: Response) => {
     body.guest = null;
   }
 
-  const code = `FB-${generateTimestampToken()}`;
+  const code = `FB-${generateNanoIdToken()}`;
   body.code = code;
 
   const feedback = new Feedback(body);

@@ -28,7 +28,7 @@ import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { excludeFromUserStrict } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
-import { generateTimestampToken } from "@/shared/utils/tokens/timestampToken.util";
+import { generateNanoIdToken } from "@/shared/utils/tokens/nanoidToken.util";
 import { NextFunction, Request, Response } from "express";
 import { ClientSession, Document } from "mongoose";
 
@@ -121,7 +121,7 @@ export const createOrder = async (
   }
 
   // Generate order code
-  const code = `OR-${generateTimestampToken()}`;
+  const code = `OR-${generateNanoIdToken()}`;
 
   // get cart
   let cart: any[] = [];
