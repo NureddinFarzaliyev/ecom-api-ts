@@ -10,6 +10,7 @@ const salesCampaignSchema = new Schema(
     banner: { type: String, required: true },
     products: [{ type: Schema.Types.ObjectId, ref: "Product" }],
     isActive: { type: Boolean, default: false },
+    endsAt: { type: Date },
   },
   { timestamps: true },
 );
@@ -27,6 +28,7 @@ export const validateCreateSalesCampaign = (data: Partial<ISalesCampaign>) => {
     banner: Joi.string().required(),
     products: Joi.array().items(Joi.string().hex().length(24)).required(),
     isActive: Joi.boolean(),
+    endsAt: Joi.date(),
   });
   return schema.validate(data);
 };
@@ -41,6 +43,7 @@ export const validateEditSalesCampaign = (data: Partial<ISalesCampaign>) => {
     banner: Joi.string(),
     products: Joi.array().items(Joi.string().hex().length(24)),
     isActive: Joi.boolean(),
+    endsAt: Joi.date(),
   });
   return schema.validate(parsedCampaign);
 };
