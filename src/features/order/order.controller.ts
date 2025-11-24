@@ -80,10 +80,12 @@ export const getSingleOrder = async (req: Request, res: Response) => {
     findQuery.userId = userId;
   }
 
-  const order = await Order.findOne(findQuery).populate({
-    path: "userId",
-    select: excludeFromUserStrict,
-  });
+  const order = await Order.findOne(findQuery)
+    .populate({
+      path: "userId",
+      select: excludeFromUserStrict,
+    })
+    .populate("products.productId");
   if (!order) {
     throw new ValidationError("Order not found");
   }
