@@ -28,6 +28,7 @@ app.use(
     origin: [
       process.env.CLIENT_URL as string,
       process.env.TEST_CLIENT_URL as string,
+      process.env.DEMO_CLIENT_URL as string,
     ],
     credentials: true,
   }),
