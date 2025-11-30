@@ -40,9 +40,9 @@ export const validateCreateFeedback = (data: Partial<IFeedback>) => {
   const schema = Joi.object({
     guest: Joi.object({
       name: Joi.string().required(),
-      surname: Joi.string().required(),
-      email: Joi.string().email().required(),
-      phoneNumber: Joi.string().optional(),
+      surname: Joi.string(),
+      email: Joi.string().email(),
+      phoneNumber: Joi.string().required(),
     }),
     content: Joi.string().required().max(2000),
   });

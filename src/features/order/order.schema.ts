@@ -119,8 +119,8 @@ export const validateCreateOrder = (data: Partial<IOrder>) => {
     // guest fields
     guest: Joi.object({
       name: Joi.string().required(),
-      surname: Joi.string().required(),
-      email: Joi.string().email().required(),
+      surname: Joi.string(),
+      email: Joi.string().email(),
       phoneNumber: Joi.string().required(),
     }).optional(),
     cart: Joi.array().items(

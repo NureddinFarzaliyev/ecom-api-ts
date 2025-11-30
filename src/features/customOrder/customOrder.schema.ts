@@ -71,8 +71,8 @@ export const validateCreateCustomOrder = (order: Partial<ICustomOrder>) => {
   const schema = Joi.object({
     guest: Joi.object({
       name: Joi.string().required(),
-      surname: Joi.string().required(),
-      email: Joi.string().email().required(),
+      surname: Joi.string(),
+      email: Joi.string().email(),
       phoneNumber: Joi.string().required(),
     }).when("userId", {
       is: null,
