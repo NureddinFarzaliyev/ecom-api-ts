@@ -1,0 +1,182 @@
+tags:
+  - name: Testimonials
+    description: Operations related to testimonials
+paths:
+  /testimonials/config:
+    get:
+      summary: Get testimonial configuration details
+      tags:
+        - Testimonials
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+
+  /testimonials:
+    get:
+      summary: Get list of testimonials
+      tags:
+        - Testimonials
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Testimonial'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new testimonial
+      tags:
+        - Testimonials
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+                - image
+              properties:
+                title:
+                  type: string
+                  description: Testimonial title
+                  example: "Great service!"
+                content:
+                  type: string
+                  description: Testimonial content
+                  example: "I loved the product and support."
+                image:
+                  type: string
+                  format: binary
+                  description: Testimonial image file
+                isActive:
+                  type: boolean
+                  description: Whether the testimonial is active/visible
+                  example: true
+      responses:
+        '201':
+          description: Testimonial created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Testimonial'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /testimonials/{id}:
+    patch:
+      summary: Edit an existing testimonial
+      tags:
+        - Testimonials
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Testimonial ID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Testimonial title
+                  example: "Updated title"
+                content:
+                  type: string
+                  description: Testimonial content
+                  example: "Updated testimonial content."
+                image:
+                  type: string
+                  format: binary
+                  description: Testimonial image file (replace existing)
+                isActive:
+                  type: boolean
+                  description: Whether the testimonial is active/visible
+                  example: false
+      responses:
+        '200':
+          description: Testimonial updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Testimonial'
+        '400':
+          description: Validation error
+        '404':
+          description: Testimonial not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a testimonial
+      tags:
+        - Testimonials
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Testimonial ID
+      responses:
+        '200':
+          description: Testimonial deleted successfully
+        '404':
+          description: Testimonial not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Testimonial:
+      type: object
+      required:
+        - title
+        - content
+        - image
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the testimonial (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9f1"
+        title:
+          type: string
+          description: Testimonial title
+          example: "Great service!"
+        content:
+          type: string
+          description: Testimonial content
+          example: "I loved the product and support."
+        image:
+          type: string
+          description: URL or filename of the testimonial image
+          example: "https://example.com/testimonials/img1.jpg"
+        isActive:
+          type: boolean
+          description: Whether the testimonial is active/visible
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the testimonial was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the testimonial was last updated
+          example: "2025-09-17T15:20:30.123Z"
