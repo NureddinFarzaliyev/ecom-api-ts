@@ -1,6 +1,7 @@
 import { cartRouter } from "@/features/cart/cart.router";
 import { cashbackRouter } from "@/features/cashback/cashback.router";
 import { customOrderRouter } from "@/features/customOrder/customOrder.router";
+import { faqRouter } from "@/features/faq/faq.router";
 import { feedbackRouter } from "@/features/feedback/feedback.router";
 import { instalmentRequestRouter } from "@/features/instalmentRequest/instalmentRequest.router";
 import { notificationRouter } from "@/features/notification/notification.router";
@@ -34,3 +35,4 @@ v1Router.use("/notifications", notificationRouter);
 v1Router.use("/orders", orderRouter);
 v1Router.use("/instalment-requests", instalmentRequestRouter);
 v1Router.use("/sales-campaigns", salesCampaignRouter);
+v1Router.use("/faq", faqRouter);

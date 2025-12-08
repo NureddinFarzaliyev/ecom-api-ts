@@ -1,0 +1,157 @@
+tags:
+  - name: FAQ
+    description: Operations related to FAQs
+paths:
+  /faq:
+    get:
+      summary: Get list of FAQs
+      tags:
+        - FAQ
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Faq'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new FAQ
+      tags:
+        - FAQ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - question
+                - answer
+              properties:
+                question:
+                  type: string
+                  description: FAQ question
+                  example: "How do I reset my password?"
+                answer:
+                  type: string
+                  description: FAQ answer
+                  example: "Use the 'Forgot password' link on the login page."
+                isActive:
+                  type: boolean
+                  description: Whether the FAQ is active/visible
+                  example: true
+      responses:
+        '201':
+          description: FAQ created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Faq'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /faq/{id}:
+    patch:
+      summary: Edit an existing FAQ
+      tags:
+        - FAQ
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: FAQ ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question:
+                  type: string
+                  description: FAQ question
+                  example: "How do I change my email?"
+                answer:
+                  type: string
+                  description: FAQ answer
+                  example: "Go to account settings and update your email."
+                isActive:
+                  type: boolean
+                  description: Whether the FAQ is active/visible
+                  example: false
+      responses:
+        '200':
+          description: FAQ updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Faq'
+        '400':
+          description: Validation error
+        '404':
+          description: FAQ not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete an FAQ
+      tags:
+        - FAQ
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: FAQ ID
+      responses:
+        '200':
+          description: FAQ deleted successfully
+        '404':
+          description: FAQ not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Faq:
+      type: object
+      required:
+        - question
+        - answer
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the FAQ (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9f0"
+        question:
+          type: string
+          description: FAQ question
+          example: "How do I reset my password?"
+        answer:
+          type: string
+          description: FAQ answer
+          example: "Use the 'Forgot password' link on the login page."
+        isActive:
+          type: boolean
+          description: Whether the FAQ is active/visible
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the FAQ was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the FAQ was last updated
+          example: "2025-09-17T15:20:30.123Z"
