@@ -25,6 +25,7 @@ import {
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
+import { excludeFromOrderProduct } from "@/shared/utils/population/excludeFromProduct.util";
 import { excludeFromUserStrict } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
@@ -61,7 +62,10 @@ export const getOrders = async (req: Request, res: Response) => {
   const { results: orders, paginationData } = await paginate(Order, findQuery, {
     page: queryPage,
     limit: queryLimit,
-    populate: [{ path: "userId", select: excludeFromUserStrict }],
+    populate: [
+      { path: "userId", select: excludeFromUserStrict },
+      { path: "products.productId", select: excludeFromOrderProduct },
+    ],
   });
 
   const response = createSuccessResponse(
@@ -81,11 +85,8 @@ export const getSingleOrder = async (req: Request, res: Response) => {
   }
 
   const order = await Order.findOne(findQuery)
-    .populate({
-      path: "userId",
-      select: excludeFromUserStrict,
-    })
-    .populate("products.productId");
+    .populate({ path: "userId", select: excludeFromUserStrict })
+    .populate({ path: "products.productId", select: excludeFromOrderProduct });
   if (!order) {
     throw new ValidationError("Order not found");
   }
