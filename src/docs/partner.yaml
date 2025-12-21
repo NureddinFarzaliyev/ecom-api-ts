@@ -1,0 +1,142 @@
+tags:
+  - name: Partners 
+    description: Operations related to partners
+paths:
+  /partners/config:
+    get:
+      summary: Get partner configuration details
+      tags:
+        - Partners
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+
+  /partners:
+    get:
+      summary: Get list of partners
+      tags:
+        - Partners
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Partner'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new partner
+      tags:
+        - Partners
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - partnerImage 
+              properties:
+                partnerImage:
+                  type: string
+                  format: binary
+                  description: Partner image file
+      responses:
+        '201':
+          description: Partner created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+  /partners/{id}:
+    patch:
+      summary: Edit an existing partner
+      tags:
+        - Partners
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Partner ID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                partnerImage:
+                  type: string
+                  format: binary
+                  description: Partner image file (replace existing)
+      responses:
+        '200':
+          description: Partner updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '400':
+          description: Validation error
+        '404':
+          description: Partner not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a partner
+      tags:
+        - Partners
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Partner ID
+      responses:
+        '200':
+          description: Partner deleted successfully
+        '404':
+          description: Partner not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Partner:
+      type: object
+      required:
+        - imageUrl
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for the partner (MongoDB ObjectId)
+          example: "64f8c0a2f3e7b2b1d2a1c9f1"
+        imageUrl:
+          type: string
+          description: URL or filename of the partner image
+          example: "https://example.com/partners/img1.jpg"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the partner was created
+          example: "2025-09-17T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the partner was last updated
+          example: "2025-09-17T15:20:30.123Z"

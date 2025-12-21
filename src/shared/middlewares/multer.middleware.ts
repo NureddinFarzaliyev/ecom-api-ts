@@ -10,6 +10,7 @@ export enum UploadField {
   CustomOrderImage = "customOrderImage",
   SalesCampaignImage = "salesCampaignImage",
   TestimonialImage = "testimonialImage",
+  PartnerImage = "partnerImage",
 }
 
 export const fileLimitMB = 10;
@@ -34,6 +35,9 @@ const storage = multer.diskStorage({
         break;
       case UploadField.TestimonialImage:
         folder = "uploads/testimonials";
+        break;
+      case UploadField.PartnerImage:
+        folder = "uploads/partnerImage";
         break;
     }
 
