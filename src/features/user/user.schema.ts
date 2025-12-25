@@ -1,4 +1,9 @@
-import { IUser, ResetPasswordBody, UserRole } from "@/features/user/user.types";
+import {
+  ChangePasswordBody,
+  IUser,
+  ResetPasswordBody,
+  UserRole,
+} from "@/features/user/user.types";
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 
@@ -66,6 +71,15 @@ export const validateResetPassword = (data: ResetPasswordBody) => {
     token: Joi.string().required(),
     id: Joi.string().required(),
     newPassword: Joi.string().min(6).required(),
+  });
+
+  return schema.validate(data);
+};
+
+export const validateUserChangePassword = (data: ChangePasswordBody) => {
+  const schema = Joi.object({
+    newPassword: Joi.string().required(),
+    oldPassword: Joi.string().required(),
   });
 
   return schema.validate(data);

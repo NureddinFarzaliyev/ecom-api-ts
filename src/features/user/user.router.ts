@@ -1,4 +1,5 @@
 import {
+  changePassword,
   forgotPassword,
   getMe,
   getUserConfig,
@@ -24,3 +25,4 @@ userRouter.get("/me", verifyJwt, errorHandler(getMe));
 userRouter.patch("/me", verifyJwt, errorHandler(updateUser));
 userRouter.post("/forgot-password", errorHandler(forgotPassword));
 userRouter.post("/reset-password", errorHandler(resetPassword));
+userRouter.post("/change-password", verifyJwt, errorHandler(changePassword));

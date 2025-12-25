@@ -191,6 +191,24 @@ paths:
                 newPassword:
                   type: string
                   description: New password for the user
+  /users/change-password:
+    post:
+      summary: Change logged-in user's password
+      tags: 
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                  description: Current password of the user
+                newPassword:
+                  type: string
+                  description: New password of the user
 components:
   schemas:
     User:

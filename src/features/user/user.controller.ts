@@ -2,6 +2,7 @@ import {
   User,
   validateForgotPassword,
   validateResetPassword,
+  validateUserChangePassword,
   validateUserLogin,
   validateUserRegistration,
   validateUserUpdate,
@@ -15,7 +16,12 @@ import { createSuccessResponse } from "@/shared/utils/responseFormatters/createS
 import { CookieOptions, NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { createJWTToken, verifyJWTToken } from "@/shared/utils/tokens/jwt.util";
-import { IUser, ResetPasswordBody, UserRole } from "@/features/user/user.types";
+import {
+  ChangePasswordBody,
+  IUser,
+  ResetPasswordBody,
+  UserRole,
+} from "@/features/user/user.types";
 import { sendNoreply } from "@/shared/utils/email/sendNoReply.util";
 import {
   generateVerificationEmail,
@@ -33,6 +39,8 @@ import {
   passwordResetEmailSubject,
 } from "@/shared/utils/email/generatePasswordResetEmail.util";
 import { excludeFromUser } from "@/shared/utils/population/excludeFromUser.util";
+import { createNotification } from "@/features/notification/utils/createNotification.util";
+import { NotificationType } from "@/features/notification/notification.types";
 
 export const getUserConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("User config received", {
@@ -222,6 +230,45 @@ export const resetPassword = async (req: Request, res: Response) => {
   await user.save();
 
   const response = createSuccessResponse("Password successfully reset");
+  res.status(200).json(response);
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+  const body = sanitizeObject(req.body);
+  const { error } = validateUserChangePassword(body as ChangePasswordBody);
+
+  if (error) {
+    throw new ValidationError(error.details[0].message);
+  }
+
+  const userId = req.userId;
+
+  const user = await User.findById(userId);
+  if (!user) throw new AuthenticationError("Authentication Error");
+
+  const isOldPassCorrect = await bcrypt.compare(
+    body.oldPassword,
+    user.password,
+  );
+
+  if (!isOldPassCorrect) {
+    throw new AuthenticationError("Old password is incorrect");
+  }
+
+  const newPassHashed = await bcrypt.hash(body.newPassword, 10);
+  user.password = newPassHashed;
+  const date = new Date();
+  user.passwordChangedAt = date;
+
+  await user.save();
+  createNotification({
+    userId,
+    title: "Password Changed",
+    content: `Your password is changed at ${date}. If it is not you who did this action, please change your password again immediately.`,
+    type: NotificationType.WARN,
+  });
+
+  const response = createSuccessResponse("Password successfully changed");
   res.status(200).json(response);
 };
 
