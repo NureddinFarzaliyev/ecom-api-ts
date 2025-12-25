@@ -3,7 +3,6 @@ import {
   validatePreferences,
 } from "@/features/preferences/preference.schema";
 import {
-  PreferenceCategory,
   PreferenceType,
   PreferenceUpdate,
 } from "@/features/preferences/preference.types";
@@ -20,12 +19,17 @@ import { Request, Response } from "express";
 import { AnyBulkWriteOperation } from "mongoose";
 
 export const getPreferencesConfig = async (_req: Request, res: Response) => {
+  const prefs = await Preference.find({}).select("key");
+  const allPrefs = prefs.map((p) => p.key);
+  const keys = new Set(prefs.map((p) => p.key.split(":")[0]));
+
   const response = createSuccessResponse("Preferences config", {
-    preferences: PreferenceType,
-    categories: PreferenceCategory,
+    preferences: allPrefs,
+    categories: [...keys],
     uploadFieldName: UploadField.PreferencesImage,
     fileLimitMB,
   });
+
   res.status(200).json(response);
 };
 
