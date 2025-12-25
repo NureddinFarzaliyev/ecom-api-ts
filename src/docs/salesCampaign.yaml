@@ -66,6 +66,20 @@ paths:
                   type: boolean
                   description: Whether the campaign is active
                   example: true
+                isHighlighted:
+                  type: boolean
+                  description: Whether the campaign is highlighted. Only one campaign can be highighted at the time.
+                  example: true
+                endsAt:
+                  type: string
+                  format: date-time
+                  description: when the campaign ends
+                  example: "2025-10-04T08:30:00.000Z"
+                startsAt:
+                  type: string
+                  format: date-time
+                  description: when the campaign starts
+                  example: "2025-10-04T08:30:00.000Z"
       responses:
         '201':
           description: Sales campaign created successfully
@@ -141,6 +155,20 @@ paths:
                   type: boolean
                   description: Whether the campaign is active
                   example: false
+                isHighlighted:
+                  type: boolean
+                  description: Whether the campaign is highlighted. Only one campaign can be highighted at the time.
+                  example: true
+                endsAt:
+                  type: string
+                  format: date-time
+                  description: when the campaign ends
+                  example: "2025-10-04T08:30:00.000Z"
+                startsAt:
+                  type: string
+                  format: date-time
+                  description: when the campaign starts
+                  example: "2025-10-04T08:30:00.000Z"
       responses:
         '200':
           description: Sales campaign updated successfully
@@ -208,6 +236,20 @@ components:
           type: boolean
           description: Whether the campaign is active
           example: true
+        isHighlighted:
+          type: boolean
+          description: Whether the campaign is highlighted
+          example: true
+        endsAt:
+          type: string
+          format: date-time
+          description: when the campaign ends
+          example: "2025-10-04T08:30:00.000Z"
+        startsAt:
+          type: string
+          format: date-time
+          description: when the campaign starts
+          example: "2025-10-04T08:30:00.000Z"
         createdAt:
           type: string
           format: date-time
