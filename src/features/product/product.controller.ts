@@ -66,8 +66,12 @@ export const getProducts = async (req: Request, res: Response) => {
     findQuery.price = priceQuery;
   }
 
-  if (category && mongoose.Types.ObjectId.isValid(category)) {
-    findQuery.category = category;
+  if (category) {
+    const categories = category.split(",");
+    const isValid = categories.every((c) => mongoose.Types.ObjectId.isValid(c));
+    if (isValid) {
+      findQuery.category = { $in: categories };
+    }
   }
 
   const sort: any = {};
