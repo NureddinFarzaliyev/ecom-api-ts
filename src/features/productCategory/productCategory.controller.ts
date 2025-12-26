@@ -27,8 +27,9 @@ export const getProductCategoryTitles = async (
   _req: Request,
   res: Response,
 ) => {
-  const categories = await ProductCategory.find({}).select("title");
-  const response = createSuccessResponse("Category titles", categories);
+  const categories = await ProductCategory.find({}).select("title parentId");
+  const tree = buildCategoryTree(categories);
+  const response = createSuccessResponse("Category titles", tree);
   res.json(response);
 };
 
