@@ -1,4 +1,4 @@
-import { IProduct } from "@/features/product/product.types";
+import { IProduct, ProductQueries } from "@/features/product/product.types";
 import Joi from "joi";
 import mongoose, { Model } from "mongoose";
 

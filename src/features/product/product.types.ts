@@ -12,3 +12,11 @@ export interface IProduct extends Document {
   stock: number;
   isPublic: boolean;
 }
+
+export interface ProductQueries {
+  q?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  priceSort?: 0 | 1;
+  category?: string;
+}

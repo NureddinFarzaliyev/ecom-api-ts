@@ -3,7 +3,9 @@ import {
   validateCreateProduct,
   validateEditProduct,
 } from "@/features/product/product.schema";
+import { ProductQueries } from "@/features/product/product.types";
 import { ProductCategory } from "@/features/productCategory/productCategory.schema";
+import { UserRole } from "@/features/user/user.types";
 import {
   fileLimitMB,
   UploadField,
@@ -20,6 +22,7 @@ import {
   sanitizeString,
 } from "@/shared/utils/sanitizer/sanitizer.util";
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 
 export const getProductConfig = async (_req: Request, res: Response) => {
   const response = createSuccessResponse("Product config", {
@@ -34,10 +37,50 @@ export const getProducts = async (req: Request, res: Response) => {
   const queryPage = queryParams.page || 1;
   const queryLimit = queryParams.limit || 10;
 
+  const { userRole } = req;
+
+  const findQuery: any = {};
+
+  if (userRole !== UserRole.ADMIN) {
+    findQuery.isPublic = true;
+  }
+
+  const { q, minPrice, maxPrice, priceSort, category }: ProductQueries =
+    queryParams;
+
+  if (q) {
+    findQuery.$text = { $search: queryParams.q };
+  }
+
+  const priceQuery: any = {};
+
+  if (minPrice !== undefined) {
+    priceQuery.$gte = Number(minPrice);
+  }
+
+  if (maxPrice !== undefined) {
+    priceQuery.$lte = Number(maxPrice);
+  }
+
+  if (Object.keys(priceQuery).length > 0) {
+    findQuery.price = priceQuery;
+  }
+
+  if (category && mongoose.Types.ObjectId.isValid(category)) {
+    findQuery.category = category;
+  }
+
+  const sort: any = {};
+
+  const priceSortVal = Number(priceSort);
+  if (priceSortVal === 1 || priceSortVal === 0) {
+    sort.price = priceSortVal === 1 ? 1 : -1;
+  }
+
   const { results: products, paginationData: pagination } = await paginate(
     Product,
-    { isPublic: true },
-    { page: queryPage, limit: queryLimit, populate: ["category"] },
+    findQuery,
+    { page: queryPage, limit: queryLimit, populate: ["category"], sort },
   );
 
   const response = createSuccessResponse(
