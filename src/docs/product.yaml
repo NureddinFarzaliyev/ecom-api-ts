@@ -136,6 +136,12 @@ paths:
         '500':
           description: Internal server error
 
+  /products/titles:
+    get:
+      summary: Get only product titles with their ids
+      tags:
+        - Products
+
   /products/{id}:
     get:
       summary: Get a single product by ID

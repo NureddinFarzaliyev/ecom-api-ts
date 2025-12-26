@@ -3,6 +3,7 @@ import {
   deleteProductCategory,
   editProductCategory,
   fetchAllProductCategories,
+  getProductCategoryTitles,
 } from "@/features/productCategory/productCategory.controller";
 import { verifyAdmin } from "@/shared/middlewares/verifyAdmin.middleware";
 import { verifyJwt } from "@/shared/middlewares/verifyJwt.middleware";
@@ -12,6 +13,7 @@ import { Router } from "express";
 export const productCategoryRouter = Router();
 
 productCategoryRouter.get("/", errorHandler(fetchAllProductCategories));
+productCategoryRouter.get("/titles", errorHandler(getProductCategoryTitles));
 productCategoryRouter.post(
   "/",
   verifyJwt,

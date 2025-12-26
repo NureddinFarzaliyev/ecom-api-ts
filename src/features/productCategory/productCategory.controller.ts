@@ -23,6 +23,15 @@ export const fetchAllProductCategories = async (
   res.status(200).json(response);
 };
 
+export const getProductCategoryTitles = async (
+  _req: Request,
+  res: Response,
+) => {
+  const categories = await ProductCategory.find({}).select("title");
+  const response = createSuccessResponse("Category titles", categories);
+  res.json(response);
+};
+
 export const createProductCategory = async (req: Request, res: Response) => {
   const body = sanitizeObject(req.body);
   const { error } = validateCreateProductCategory(body);

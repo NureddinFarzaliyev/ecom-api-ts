@@ -50,6 +50,12 @@ paths:
           description: Validation error or duplicate title
         '500':
           description: Internal server error
+  /product-categories/titles:
+    get:
+      summary: Get only product category titles with their ids
+      tags:
+        - ProductCategories
+
   /product-categories/{id}:
     patch:
       summary: Edit a product category

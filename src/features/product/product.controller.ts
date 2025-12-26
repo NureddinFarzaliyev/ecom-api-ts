@@ -96,6 +96,20 @@ export const getProducts = async (req: Request, res: Response) => {
   res.status(200).json(response);
 };
 
+export const getProductTitles = async (req: Request, res: Response) => {
+  const { userRole } = req;
+
+  const findQuery: any = {};
+  if (userRole !== UserRole.ADMIN) {
+    findQuery.isPublic = false;
+  }
+
+  const products = await Product.find(findQuery).select("title");
+
+  const response = createSuccessResponse("All product titles", products);
+  res.json(response);
+};
+
 export const getSingleProduct = async (req: Request, res: Response) => {
   const product = await Product.findById(
     sanitizeString(req.params.id),
