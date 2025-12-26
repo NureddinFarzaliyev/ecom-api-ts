@@ -31,6 +31,32 @@ paths:
             type: integer
             default: 10
           description: Number of products per page
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Search term to filter products by title or description
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: Filter products by category ID
+        - in: query
+          name: minPrice
+          schema:
+            type: number
+          description: Minimum price filter
+        - in: query
+          name: maxPrice
+          schema:
+            type: number
+          description: Maximum price filter
+        - in: query
+          name: priceSort
+          schema:
+            type: string
+            enum: [0, 1]
+          description: Sort by price (0 descending, 1 ascending)
       responses:
         '200':
           description: Successful response
