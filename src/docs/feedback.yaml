@@ -7,6 +7,24 @@ paths:
       summary: Get all feedbacks
       tags:
         - Feedbacks
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Number of custom orders per page
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Search query for name, surname and unique code
       responses:
         "200":
           description: List of feedbacks

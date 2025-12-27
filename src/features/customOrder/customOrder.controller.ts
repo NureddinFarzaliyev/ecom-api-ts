@@ -32,6 +32,7 @@ import {
 } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
+import { generateSearchByUserIdPopulatedQuery } from "@/shared/utils/search/generateSearchByUserIdPopulatedQuery";
 import { generateNanoIdToken } from "@/shared/utils/tokens/nanoidToken.util";
 import { Request, Response } from "express";
 
@@ -54,10 +55,13 @@ export const getCustomOrders = async (req: Request, res: Response) => {
   const queryPage = queryParams.page || 1;
   const queryLimit = queryParams.limit || 10;
 
+  const { q } = queryParams;
   const { userRole, userId } = req;
   let findQuery = {};
   if (userRole !== UserRole.ADMIN) {
     findQuery = { userId };
+  } else if (q) {
+    findQuery = await generateSearchByUserIdPopulatedQuery(q, ["code"]);
   }
 
   const { results: orders, paginationData } = await paginate(

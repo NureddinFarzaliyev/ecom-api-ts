@@ -29,6 +29,7 @@ import { excludeFromOrderProduct } from "@/shared/utils/population/excludeFromPr
 import { excludeFromUserStrict } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
+import { generateSearchByUserIdPopulatedQuery } from "@/shared/utils/search/generateSearchByUserIdPopulatedQuery";
 import { generateNanoIdToken } from "@/shared/utils/tokens/nanoidToken.util";
 import { NextFunction, Request, Response } from "express";
 import { ClientSession, Document } from "mongoose";
@@ -53,10 +54,13 @@ export const getOrders = async (req: Request, res: Response) => {
   const queryPage = queryParams.page || 1;
   const queryLimit = queryParams.limit || 10;
 
+  const { q } = queryParams;
   const { userRole, userId } = req;
-  const findQuery: any = {};
+  let findQuery = {};
   if (userRole !== UserRole.ADMIN) {
-    findQuery.userId = userId;
+    findQuery = { userId };
+  } else if (q) {
+    findQuery = await generateSearchByUserIdPopulatedQuery(q, ["code"]);
   }
 
   const { results: orders, paginationData } = await paginate(Order, findQuery, {

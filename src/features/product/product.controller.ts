@@ -38,9 +38,7 @@ export const getProducts = async (req: Request, res: Response) => {
   const queryLimit = queryParams.limit || 10;
 
   const { userRole } = req;
-
   const findQuery: any = {};
-
   if (userRole !== UserRole.ADMIN) {
     findQuery.isPublic = true;
   }

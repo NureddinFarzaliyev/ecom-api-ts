@@ -11,6 +11,8 @@ export const sanitizeString = (input: string, options = {}) => {
 export const sanitizeObject = (obj: Record<string, any>, options = {}) => {
   const clean: Record<string, any> = {};
   for (const key in obj) {
+    if (key.startsWith("$")) continue;
+    if (key.includes(".")) continue;
     const value = obj[key];
     if (typeof value === "string") {
       clean[key] = sanitizeString(value, options);
@@ -25,4 +27,8 @@ export const sanitizeObject = (obj: Record<string, any>, options = {}) => {
 
 export const sanitizeFilename = (name: string): string => {
   return name.replace(/[^a-z0-9_\-\.]/gi, "_").toLowerCase();
+};
+
+export const escapeRegex = (input: string) => {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 };
