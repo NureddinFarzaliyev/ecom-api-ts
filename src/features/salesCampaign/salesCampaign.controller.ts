@@ -12,6 +12,7 @@ import {
 } from "@/shared/utils/errorHandler/errors";
 import { deleteFiles } from "@/shared/utils/files/deleteFiles.util";
 import { parseStringJSON } from "@/shared/utils/JSONParsers/parseStringJSON.util";
+import { extractPaginationQueries } from "@/shared/utils/pagination/extractPaginationQueries";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
@@ -26,9 +27,8 @@ export const getSalesCampaignConfig = async (_req: Request, res: Response) => {
 
 export const getSalesCampaigns = async (req: Request, res: Response) => {
   const queryParams = sanitizeObject(req.query);
-  const queryPage = queryParams.page || 1;
-  const queryLimit = queryParams.limit || 10;
   const queryHighlighted = queryParams.highlighted || false;
+  const { queryPage, queryLimit } = extractPaginationQueries(queryParams, true);
 
   const findQuery: any = {};
   if (queryHighlighted) {

@@ -15,6 +15,7 @@ import {
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
 import { deleteFiles } from "@/shared/utils/files/deleteFiles.util";
+import { extractPaginationQueries } from "@/shared/utils/pagination/extractPaginationQueries";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import {
@@ -34,8 +35,7 @@ export const getProductConfig = async (_req: Request, res: Response) => {
 
 export const getProducts = async (req: Request, res: Response) => {
   const queryParams = sanitizeObject(req.query);
-  const queryPage = queryParams.page || 1;
-  const queryLimit = queryParams.limit || 10;
+  const { queryPage, queryLimit } = extractPaginationQueries(queryParams, true);
 
   const { userRole } = req;
   const findQuery: any = {};

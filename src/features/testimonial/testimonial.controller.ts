@@ -18,6 +18,7 @@ import {
   fileLimitMB,
   UploadField,
 } from "@/shared/middlewares/multer.middleware";
+import { extractPaginationQueries } from "@/shared/utils/pagination/extractPaginationQueries";
 
 export const getTestimonialConfig = async (_: Request, res: Response) => {
   const config = {
@@ -30,11 +31,9 @@ export const getTestimonialConfig = async (_: Request, res: Response) => {
 };
 
 export const getAllTestimonial = async (req: Request, res: Response) => {
-  const queryParams = sanitizeObject(req.query);
-  const queryPage = queryParams.page || 1;
-  const queryLimit = queryParams.limit || 10;
-
+  const { queryPage, queryLimit } = extractPaginationQueries(req.query);
   const { userRole } = req;
+
   let findQuery = {};
   if (userRole !== UserRole.ADMIN) {
     findQuery = { isActive: true };

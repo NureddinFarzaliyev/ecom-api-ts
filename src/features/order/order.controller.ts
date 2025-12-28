@@ -24,6 +24,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
+import { extractPaginationQueries } from "@/shared/utils/pagination/extractPaginationQueries";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { excludeFromOrderProduct } from "@/shared/utils/population/excludeFromProduct.util";
 import { excludeFromUserStrict } from "@/shared/utils/population/excludeFromUser.util";
@@ -51,11 +52,10 @@ export const getOrderConfig = async (_req: Request, res: Response) => {
 
 export const getOrders = async (req: Request, res: Response) => {
   const queryParams = sanitizeObject(req.query);
-  const queryPage = queryParams.page || 1;
-  const queryLimit = queryParams.limit || 10;
-
+  const { queryPage, queryLimit } = extractPaginationQueries(queryParams, true);
   const { q } = queryParams;
   const { userRole, userId } = req;
+
   let findQuery = {};
   if (userRole !== UserRole.ADMIN) {
     findQuery = { userId };

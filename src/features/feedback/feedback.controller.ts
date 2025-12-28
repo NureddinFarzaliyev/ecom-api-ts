@@ -10,6 +10,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
+import { extractPaginationQueries } from "@/shared/utils/pagination/extractPaginationQueries";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { excludeFromUser } from "@/shared/utils/population/excludeFromUser.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
@@ -29,11 +30,10 @@ export const getFeedbackConfig = async (_req: Request, res: Response) => {
 
 export const getFeedbacks = async (req: Request, res: Response) => {
   const queryParams = sanitizeObject(req.query);
-  const queryPage = queryParams.page || 1;
-  const queryLimit = queryParams.limit || 10;
-
+  const { queryLimit, queryPage } = extractPaginationQueries(queryParams, true);
   const { q } = queryParams;
   const { userRole, userId } = req;
+
   let findQuery = {};
   if (userRole !== UserRole.ADMIN) {
     findQuery = { userId };

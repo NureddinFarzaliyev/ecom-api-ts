@@ -17,6 +17,7 @@ import {
   validateEditPartner,
 } from "@/features/partner/partner.schema";
 import { deleteFiles } from "@/shared/utils/files/deleteFiles.util";
+import { extractPaginationQueries } from "@/shared/utils/pagination/extractPaginationQueries";
 
 export const getPartnerConfig = (_: Request, res: Response) => {
   const config = {
@@ -29,9 +30,7 @@ export const getPartnerConfig = (_: Request, res: Response) => {
 };
 
 export const getAllPartner = async (req: Request, res: Response) => {
-  const queryParams = sanitizeObject(req.query);
-  const queryPage = queryParams.page || 1;
-  const queryLimit = queryParams.limit || 10;
+  const { queryPage, queryLimit } = extractPaginationQueries(req.query);
 
   const { results: testimonial, paginationData } = await paginate(
     Partner,

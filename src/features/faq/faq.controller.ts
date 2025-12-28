@@ -9,17 +9,16 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/shared/utils/errorHandler/errors";
+import { extractPaginationQueries } from "@/shared/utils/pagination/extractPaginationQueries";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { Request, Response } from "express";
 
 export const getAllFaq = async (req: Request, res: Response) => {
-  const queryParams = sanitizeObject(req.query);
-  const queryPage = queryParams.page || 1;
-  const queryLimit = queryParams.limit || 10;
-
+  const { queryPage, queryLimit } = extractPaginationQueries(req.query);
   const { userRole } = req;
+
   let findQuery = {};
   if (userRole !== UserRole.ADMIN) {
     findQuery = { isActive: true };

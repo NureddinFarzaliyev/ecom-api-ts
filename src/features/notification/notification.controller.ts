@@ -9,6 +9,7 @@ import {
   readNotificationInput,
 } from "@/features/notification/notification.types";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
+import { extractPaginationQueries } from "@/shared/utils/pagination/extractPaginationQueries";
 import { paginate } from "@/shared/utils/pagination/paginate.util";
 import { createSuccessResponse } from "@/shared/utils/responseFormatters/createSuccessResponse.util";
 import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
@@ -28,12 +29,9 @@ export const getNotificationConfig = async (_req: Request, res: Response) => {
 
 export const getNotifications = async (req: Request, res: Response) => {
   const { userId } = req;
+  const { queryPage, queryLimit } = extractPaginationQueries(req.query);
 
-  const findQuery: any = { userId };
-
-  const queryParams = sanitizeObject(req.query);
-  const queryPage = queryParams.page || 1;
-  const queryLimit = queryParams.limit || 10;
+  const findQuery = { userId };
 
   const { results: notifications, paginationData } = await paginate(
     Notification,
