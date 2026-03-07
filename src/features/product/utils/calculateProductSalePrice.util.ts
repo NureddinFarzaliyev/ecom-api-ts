@@ -9,6 +9,8 @@ export const calculateProductSalePrice = (
   product: calulateProductSalePriceProduct | IProduct,
   quantity: number = 1,
 ) => {
+  if (!product) return 0;
+
   const saleP = product.salePercent;
   const price = product.price;
 

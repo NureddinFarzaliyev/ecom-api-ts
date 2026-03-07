@@ -17,10 +17,10 @@ export const calculateCartStats = (products: CartProduct[]) => {
     0,
   );
 
-  const totalWithoutSale = products.reduce(
-    (acc, prod) => acc + prod.quantity * (prod.productId as IProduct).price,
-    0,
-  );
+  const totalWithoutSale = products.reduce((acc, prod) => {
+    if (!prod || !prod.productId || !prod.productId) return acc;
+    return acc + prod.quantity * (prod.productId as IProduct).price;
+  }, 0);
 
   const totalQuantity = products.reduce((acc, prod) => acc + prod.quantity, 0);
 

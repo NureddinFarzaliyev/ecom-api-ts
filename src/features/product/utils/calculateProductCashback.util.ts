@@ -10,6 +10,8 @@ export const calculateProductCashback = (
   product: calculateProductCashbackInput | IProduct,
   quantity: number = 1,
 ) => {
+  if (!product) return 0;
+
   const cashbackP = product.cashbackPercent;
   const saleP = product.salePercent;
   const price = product.price;
