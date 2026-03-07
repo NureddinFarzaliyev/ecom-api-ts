@@ -15,13 +15,13 @@ export const extractPaginationQueries = (
     queryLimit: 20,
   };
 
-  const page = queryParams.page;
+  const page = Number(queryParams.page);
   if (Number.isFinite(page) && page > 0) {
     response.queryPage = page;
   }
 
-  const limit = queryParams.limit;
-  if (Number.isFinite(limit) && limit > 0 && limit < 50) {
+  const limit = Number(queryParams.limit);
+  if (Number.isFinite(limit) && Number(limit) > 0 && Number(limit) < 50) {
     response.queryLimit = limit;
   }
 

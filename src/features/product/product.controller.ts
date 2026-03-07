@@ -35,7 +35,10 @@ export const getProductConfig = async (_req: Request, res: Response) => {
 
 export const getProducts = async (req: Request, res: Response) => {
   const queryParams = sanitizeObject(req.query);
+  console.log("query params", queryParams);
   const { queryPage, queryLimit } = extractPaginationQueries(queryParams, true);
+
+  console.log("extracted query limit", queryLimit);
 
   const { userRole } = req;
   const findQuery: any = {};
@@ -78,6 +81,8 @@ export const getProducts = async (req: Request, res: Response) => {
   if (priceSortVal === 1 || priceSortVal === 0) {
     sort.price = priceSortVal === 1 ? 1 : -1;
   }
+
+  console.log("query limit given in paginate function", queryLimit);
 
   const { results: products, paginationData: pagination } = await paginate(
     Product,
