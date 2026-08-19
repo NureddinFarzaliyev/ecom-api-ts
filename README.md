@@ -77,6 +77,21 @@ bun run build
 bun run start
 ```
 
+### Installation using Docker
+
+Alternatively, you can use Docker to run the application. Make sure you have Docker installed on your machine.
+
+- Set up `.env` same way as described above.
+
+- Build and run the Docker container:
+
+```bash
+cd ecom-api-ts
+docker compose up --build
+```
+
+Server will be available on `http://localhost:3000` by default.
+
 ### API Documentation
 
 After running the server, Swagger UI for the API documentation will be available at `http://localhost:3000/v1/docs`.
@@ -100,6 +115,8 @@ Yaml files for the documentation are located in the `src/docs` folder.
 ├── .env.example        # Example .env file
 ├── package.json        # Project metadata and dependencies
 ├── tsconfig.json       # TypeScript configuration
+├── Dockerfile          # Docker configuration
+├── docker-compose.yml  # Docker Compose configuration
 └── README.md           # Project documentation
 ```
 
