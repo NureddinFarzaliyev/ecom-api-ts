@@ -1,5 +1,5 @@
 import { GuestType } from "@/shared/types/guest.types";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export enum OrderDeliveryMethod {
   PICKUP = "pickup",
@@ -20,7 +20,7 @@ export enum OrderStatus {
 }
 
 export interface IOrder extends Document {
-  userId: string | null;
+  userId: Types.ObjectId | null;
   guest: GuestType | null;
   code: string;
   products: {
@@ -46,6 +46,6 @@ export interface IOrder extends Document {
     instalmentId: string | null;
   };
   status: OrderStatus;
-  statusChangedBy: string | null;
+  statusChangedBy: Types.ObjectId | null;
   statusChangedAt: Date | null;
 }

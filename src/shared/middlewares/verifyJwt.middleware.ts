@@ -2,6 +2,7 @@ import { AuthenticationError } from "@/shared/utils/errorHandler/errors";
 import { createErrorResponse } from "@/shared/utils/responseFormatters/createErrorResponse.util";
 import { verifyJWTToken } from "@/shared/utils/tokens/jwt.util";
 import { NextFunction, Request, Response } from "express";
+import { Types } from "mongoose";
 
 export const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
@@ -15,7 +16,7 @@ export const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const user = verifyJWTToken(token) as {
-      id: string;
+      id: Types.ObjectId;
       email: string;
       role: string;
     };

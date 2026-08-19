@@ -1,9 +1,9 @@
 import "express-serve-static-core";
-import { ClientSession } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 
 declare module "express-serve-static-core" {
   interface Request {
-    userId: string;
+    userId: Types.ObjectId;
     userEmail: string;
     userRole: string;
     session?: ClientSession;

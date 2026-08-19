@@ -6,10 +6,10 @@ import { Preference } from "@/features/preferences/preference.schema";
 import { PreferenceCategory } from "@/features/preferences/preference.types";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
 import { generateNanoIdToken } from "@/shared/utils/tokens/nanoidToken.util";
-import { ClientSession } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 
 interface RequestDetails {
-  userId: string | null;
+  userId: Types.ObjectId | null;
   orderId: string;
   fin: string;
   totalPrice: number;

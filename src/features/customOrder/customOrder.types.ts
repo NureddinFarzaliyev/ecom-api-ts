@@ -1,5 +1,5 @@
 import { GuestType } from "@/shared/types/guest.types";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export enum CustomOrderStatus {
   PENDING = "PENDING",
@@ -46,15 +46,14 @@ export type customOrderResolve = {
 };
 
 export interface ICustomOrder extends Document {
-  _id: string;
   code: string;
-  userId: string | null;
+  userId: Types.ObjectId | null;
   guest: GuestType | null;
   content: string;
   link: string;
   images: string[];
   status: CustomOrderStatus;
   offers: CustomOrderOffer[];
-  resolvedBy: string | null;
+  resolvedBy: Types.ObjectId | null;
   resolvedAt: Date | null;
 }

@@ -1,5 +1,6 @@
 import { verifyJWTToken } from "@/shared/utils/tokens/jwt.util";
 import { NextFunction, Request, Response } from "express";
+import { Types } from "mongoose";
 
 export const verifyJwtOptional = (
   req: Request,
@@ -15,7 +16,7 @@ export const verifyJwtOptional = (
 
   try {
     const user = verifyJWTToken(token) as {
-      id: string;
+      id: Types.ObjectId;
       email: string;
       role: string;
     };

@@ -1,9 +1,10 @@
 import { CartProduct } from "@/features/cart/cart.types";
 import { initializeUserCart } from "@/features/cart/utils/initializeUserCart.util";
 import { Product } from "@/features/product/product.schema";
+import { Types } from "mongoose";
 
 export const addProductsToCartService = async (
-  userId: string,
+  userId: Types.ObjectId,
   products: CartProduct[],
 ) => {
   const { cart, status } = await initializeUserCart(userId);

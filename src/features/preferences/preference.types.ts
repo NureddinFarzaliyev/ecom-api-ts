@@ -21,7 +21,6 @@ export enum PreferenceCategory {
 }
 
 export interface IPreference extends Document {
-  _id: string;
   key: PreferenceType;
   value: any;
 }

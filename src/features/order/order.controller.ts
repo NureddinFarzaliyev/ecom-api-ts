@@ -225,7 +225,7 @@ export const createOrder = async (
     const instalment = await createInstalmentRequest(
       {
         userId,
-        orderId: (order._id as Document).toString(),
+        orderId: order._id.toString(),
         fin: body.payment.instalmentFin,
         totalPrice: netPrice,
         months: body.payment.instalmentMonths,
@@ -293,7 +293,7 @@ export const changeOrderStatus = async (req: Request, res: Response) => {
   const result = await order.save();
 
   await createNotification({
-    userId: order.userId?.toString(),
+    userId: order.userId ?? undefined,
     title: "Order Status Updated",
     content: `Order status updated to ${body.status}. Use profile to track order status`,
     type: NotificationType.INFO,

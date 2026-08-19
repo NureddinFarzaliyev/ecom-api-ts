@@ -1,7 +1,8 @@
 import { Cart } from "@/features/cart/cart.schema";
+import { Types } from "mongoose";
 
 export const initializeUserCart = async (
-  userId: string,
+  userId: Types.ObjectId,
   populate: boolean = false,
 ) => {
   let status = 200;

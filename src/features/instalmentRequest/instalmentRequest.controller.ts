@@ -137,7 +137,7 @@ export const changeInstalmentRequestStatus = async (
   }
 
   const notificationBody = {
-    userId: instalmentRequest.userId!.toString(),
+    userId: instalmentRequest.userId!,
     title: "instalment status changed",
     content: `Your instalment request has been changed to: ${body.status}`,
     type,

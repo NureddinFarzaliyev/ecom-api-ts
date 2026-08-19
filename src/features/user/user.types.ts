@@ -6,7 +6,6 @@ export enum UserRole {
 }
 
 export interface IUser extends Document {
-  _id: string;
   name: string;
   surname: string;
   phoneNumber: string;

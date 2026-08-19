@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export enum NotificationType {
   INFO = "info",
@@ -9,7 +9,7 @@ export enum NotificationType {
 }
 
 export interface INotification extends Document {
-  userId: string;
+  userId: Types.ObjectId;
   title: string;
   content: string;
   isRead: boolean;
@@ -20,4 +20,4 @@ export interface readNotificationInput {
   notifications: string[];
 }
 
-export interface deleteNotificationInput extends readNotificationInput { }
+export interface deleteNotificationInput extends readNotificationInput {}

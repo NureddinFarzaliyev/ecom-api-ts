@@ -36,6 +36,7 @@ import { sanitizeObject } from "@/shared/utils/sanitizer/sanitizer.util";
 import { generateSearchByUserIdPopulatedQuery } from "@/shared/utils/search/generateSearchByUserIdPopulatedQuery";
 import { generateNanoIdToken } from "@/shared/utils/tokens/nanoidToken.util";
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 
 export const getCustomOrdersConfig = async (_req: Request, res: Response) => {
   const config = {
@@ -86,7 +87,7 @@ export const getCustomOrders = async (req: Request, res: Response) => {
 export const getSingleCustomOrder = async (req: Request, res: Response) => {
   const { userRole, userId } = req;
   const { id } = req.params;
-  let findQuery: { _id: string; userId?: string } = { _id: id };
+  let findQuery: { _id: string; userId?: Types.ObjectId } = { _id: id };
   if (userRole !== UserRole.ADMIN) {
     findQuery.userId = userId;
   }
@@ -197,7 +198,7 @@ export const createCustomOrderOffer = async (req: Request, res: Response) => {
     );
   }
 
-  body.createdBy = req.userId as string;
+  body.createdBy = req.userId;
   body.status = CustomOrderOfferStatus.PENDING;
   body.date = new Date();
 
@@ -264,7 +265,7 @@ export const resolveCustomOrder = async (req: Request, res: Response) => {
     throw new NotFoundError("Custom order not found");
   }
 
-  order.resolvedBy = userId as string;
+  order.resolvedBy = userId;
   order.resolvedAt = new Date();
   order.status = body.status;
 

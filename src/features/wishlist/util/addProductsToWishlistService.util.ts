@@ -1,8 +1,9 @@
 import { Product } from "@/features/product/product.schema";
 import { initializeUserWishlist } from "@/features/wishlist/util/initializeUserWishlist.util";
+import { Types } from "mongoose";
 
 export const addProductsToWishlistService = async (
-  userId: string,
+  userId: Types.ObjectId,
   productId: string | string[],
 ) => {
   const { wishlist, status } = await initializeUserWishlist(userId);

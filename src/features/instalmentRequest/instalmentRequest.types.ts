@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export enum InstalmentRequestStatus {
   PENDING = "pending",
   APPROVED = "approved",
@@ -16,7 +18,7 @@ export enum InstalmentMonths {
 }
 
 export interface IInstalmentRequest {
-  userId: string | null;
+  userId: Types.ObjectId | null;
   orderId: string | null;
   totalPrice: number;
   months: number;

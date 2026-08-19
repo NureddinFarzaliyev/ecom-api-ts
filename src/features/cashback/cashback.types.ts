@@ -1,7 +1,6 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface ICashback extends Document {
-  _id: string;
-  userId: string;
+  userId: Types.ObjectId;
   amount: number;
 }

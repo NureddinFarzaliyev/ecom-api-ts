@@ -1,6 +1,8 @@
+import { Types } from "mongoose";
+
 export const generatePasswordResetEmail = (
   verificationCode: string,
-  userId: string,
+  userId: Types.ObjectId,
 ) => `
   <h2>E-Commerce Şifrənizi Yeniləyin</h2>
   <p>Hörmətli istifadəçi,</p>

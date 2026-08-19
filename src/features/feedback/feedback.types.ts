@@ -8,7 +8,6 @@ export enum FeedbackStatus {
 }
 
 export interface IFeedback extends Document {
-  _id: string;
   code: string;
   userId: string | null;
   guest: GuestType | null;

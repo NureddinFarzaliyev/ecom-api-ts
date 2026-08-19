@@ -5,10 +5,10 @@ import {
 import { NotificationType } from "@/features/notification/notification.types";
 import { createNotification } from "@/features/notification/utils/createNotification.util";
 import { ValidationError } from "@/shared/utils/errorHandler/errors";
-import { ClientSession } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 
 export const createCashback = async (
-  userId: string,
+  userId: Types.ObjectId,
   amount: number,
   notification?: string,
   session?: ClientSession,

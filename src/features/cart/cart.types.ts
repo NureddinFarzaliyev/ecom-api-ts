@@ -7,7 +7,6 @@ export interface CartProduct {
 }
 
 export interface ICart extends Document {
-  _id: string;
   userId: string;
   products: CartProduct[];
 }
@@ -16,4 +15,4 @@ export interface AddProductsToCartInput {
   products: CartProduct[];
 }
 
-export interface RemoveProductsFromCartInput extends AddProductsToCartInput { }
+export interface RemoveProductsFromCartInput extends AddProductsToCartInput {}

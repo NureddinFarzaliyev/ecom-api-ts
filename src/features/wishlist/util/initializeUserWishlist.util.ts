@@ -1,7 +1,8 @@
 import { Wishlist } from "@/features/wishlist/wishlist.schema";
+import { Types } from "mongoose";
 
 export const initializeUserWishlist = async (
-  userId: string,
+  userId: Types.ObjectId,
   populate: boolean = false,
 ) => {
   let status = 200;
