@@ -5,6 +5,7 @@
 - [Overview](#overview)
 - [Tech Stack](#tech-stack)
 - [Installation & Usage](#installation--usage)
+- [Installation using Docker](#installation-using-docker)
 - [API Documentation](#api-documentation)
 - [Folder Structure](#folder-structure)
 
@@ -14,13 +15,15 @@ This is an e-commerce REST API with a lot of features including cashback, wishli
 
 ### Tech Stack
 
-- _Main_:
+_Main_:
+
 - **Node.js** for server-side JavaScript execution
 - **Express.js** for building the API
 - **TypeScript** for static typing
 - **MongoDB** as the database
 
-- _Additional Tools_:
+_Additional Tools_:
+
 - **Mongoose** for MongoDB object modeling
 - **Migrate-mongo** for database migrations
 - **Joi** for input validation
